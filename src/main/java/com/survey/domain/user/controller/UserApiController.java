@@ -1,8 +1,7 @@
-package com.survey.user.controller;
+package com.survey.domain.user.controller;
 
-import com.survey.user.dto.UserRequestDto;
-import com.survey.user.service.UserDetailService;
-import com.survey.user.service.UserService;
+import com.survey.domain.user.dto.UserRequestDto;
+import com.survey.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

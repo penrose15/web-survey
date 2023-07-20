@@ -1,4 +1,4 @@
-package com.survey.user.dto;
+package com.survey.domain.user.dto;
 
 import lombok.Getter;
 import lombok.Setter;
