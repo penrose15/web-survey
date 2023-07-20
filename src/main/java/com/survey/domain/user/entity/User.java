@@ -1,6 +1,7 @@
-package com.survey.user.entity;
+package com.survey.domain.user.entity;
 
 
+import com.survey.domain.user_role.Roles;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,16 +31,20 @@ public class User implements UserDetails {
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Roles role;
+
     @Builder
-    public User(String email, String password) {
+    public User(String email, String password, Roles role) {
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     // 권한 반환
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("user"));
+        return List.of(new SimpleGrantedAuthority(Roles.USER.getRole()));
     }
 
     // 사용자 아이디(email) 반환

@@ -1,6 +1,6 @@
-package com.survey.user.service;
+package com.survey.domain.user.service;
 
-import com.survey.user.repository.UserRepository;
+import com.survey.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,6 +1,6 @@
-package com.survey.user.repository;
+package com.survey.domain.user.repository;
 
-import com.survey.user.entity.User;
+import com.survey.domain.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

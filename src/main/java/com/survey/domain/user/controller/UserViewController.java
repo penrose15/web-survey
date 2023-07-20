@@ -1,4 +1,4 @@
-package com.survey.user.controller;
+package com.survey.domain.user.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

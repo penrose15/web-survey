@@ -1,8 +1,8 @@
-package com.survey.user.service;
+package com.survey.domain.user.service;
 
-import com.survey.user.dto.UserRequestDto;
-import com.survey.user.entity.User;
-import com.survey.user.repository.UserRepository;
+import com.survey.domain.user.repository.UserRepository;
+import com.survey.domain.user.dto.UserRequestDto;
+import com.survey.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
