@@ -1,5 +1,6 @@
 package com.survey.domain.user.controller;
 
+import com.survey.domain.user.dto.UserResponseDTO;
 import com.survey.domain.user.entity.User;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,4 +23,6 @@ public class UserViewController {
     public String articles() {
         return "articles";
     }
+
+
 }
