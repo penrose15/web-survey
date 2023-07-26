@@ -1,5 +1,6 @@
 package com.survey.domain.user.service;
 
+import com.survey.domain.user.dto.UserResponseDTO;
 import com.survey.domain.user.repository.UserRepository;
 import com.survey.domain.user.dto.UserRequestDto;
 import com.survey.domain.user.entity.User;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserFindService userFindService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Long save(UserRequestDto dto) {
@@ -34,9 +36,11 @@ public class UserService {
         if(optionalUser.isPresent()) throw new IllegalStateException("이미 존재하는 email");
     }
 
-    //유저 찾는 로직
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 email"));
+    public UserResponseDTO getUserInfo(String email) {
+        User user = userFindService.findByEmail(email);
+        return UserResponseDTO.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .build();
     }
 }
