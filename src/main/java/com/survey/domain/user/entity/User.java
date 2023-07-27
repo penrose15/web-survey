@@ -1,6 +1,7 @@
 package com.survey.domain.user.entity;
 
 
+import com.survey.domain.audit.BaseEntity;
 import com.survey.domain.user_role.Roles;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -18,7 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
