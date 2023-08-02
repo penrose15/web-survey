@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
@@ -25,6 +24,7 @@ import java.util.NoSuchElementException;
 public class SurveyService {
     private final SurveyRepository surveyRepository;
     private final UserFindService userFindService;
+    private final SurveyFindService surveyFindService;
 
     public Long createSurvey(String email, SurveyCreateDTO request) {
         User user = userFindService.findByEmail(email);
@@ -47,7 +47,7 @@ public class SurveyService {
     }
 
     public Long updateSurvey(Long surveyId, String email,SurveyUpdateDTO request) {
-        Survey survey = findByIdAndEmail(email, surveyId);
+        Survey survey = surveyFindService.findByIdAndEmail(email, surveyId);
 
         survey.updateSurvey(request.getTitle(), request.getDescription(), request.getStartAt(), request.getEndAt(), request.getUserLimit(), request.getCategoryId());
         survey = surveyRepository.save(survey);
@@ -75,21 +75,10 @@ public class SurveyService {
     //findById는 question 완성 후 생성
 
     public void deleteById(String email, Long id) {
-        Survey survey = findByIdAndEmail(email, id);
+        Survey survey = surveyFindService.findByIdAndEmail(email, id);
 
         log.info("# delete survey, id={}", survey.getId());
         surveyRepository.deleteById(survey.getId());
     }
-
-    private Survey findByIdAndEmail(String email, Long id) {
-        return surveyRepository.findByIdAndUserEmail(id, email)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 설문조사"));
-    }
-
-    private Survey findById(Long surveyId) {
-        return surveyRepository.findById(surveyId)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 설문조사"));
-    }
-
 
 }
