@@ -16,11 +16,11 @@ public class Options {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    @Column(nullable = false)
     private String option;
-
+    @Column(nullable = false)
     private Integer sequence;
-
+    @Column(nullable = false)
     private Long questionId;
 
     @Builder

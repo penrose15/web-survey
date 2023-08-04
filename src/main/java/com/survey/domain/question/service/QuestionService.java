@@ -17,12 +17,11 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final SurveyFindService surveyFindService;
 
-    public Long createQuestion(QuestionRequestDto questionRequestDto, Long surveyId, String email) {
-        Survey survey = surveyFindService.findByIdAndEmail(email, surveyId);
+    public Long createQuestion(QuestionRequestDto questionRequestDto, Long surveyId, String email, int sequence) {
 
         Questions questions = Questions.builder()
                 .title(questionRequestDto.getTitle())
-                .survey(survey)
+                .surveyId(surveyId)
                 .questionType(QuestionType.getQuestionType(questionRequestDto.getQuestionType()))
                 .build();
 
