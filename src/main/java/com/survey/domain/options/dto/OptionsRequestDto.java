@@ -9,4 +9,6 @@ import lombok.NoArgsConstructor;
 public class OptionsRequestDto {
     private String option;
     private Integer sequence;
+
+
 }

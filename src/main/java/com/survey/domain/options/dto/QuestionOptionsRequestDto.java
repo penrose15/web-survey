@@ -16,8 +16,6 @@ public class QuestionOptionsRequestDto {
 
     public QuestionOptionsRequestDto(QuestionRequestDto question, List<OptionsRequestDto> options) {
         this.question = question;
-        if(this.options == null) {
-            this.options = new ArrayList<>();
-        }
+        this.options = options;
     }
 }
