@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OptionsRequestDto {
-    private String option;
-
+public class OptionUpdateDto {
+    private Long optionId;
+    private OptionsRequestDto optionsDto;
 }

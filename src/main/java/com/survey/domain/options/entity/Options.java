@@ -1,11 +1,11 @@
 package com.survey.domain.options.entity;
 
+import com.survey.domain.options.dto.OptionsRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.web.service.annotation.GetExchange;
 
 @Getter
 @Entity
@@ -19,16 +19,19 @@ public class Options {
     @Column(nullable = false)
     private String option;
     @Column(nullable = false)
-    private Integer sequence;
-    @Column(nullable = false)
     private Long questionId;
 
     @Builder
-    public Options(Long id, String option, Integer sequence, Long questionId) {
+    public Options(Long id, String option, Long questionId) {
         this.id = id;
         this.option = option;
-        this.sequence = sequence;
         this.questionId = questionId;
+    }
+
+    public void updateOption(OptionsRequestDto dto) {
+        if(dto.getOption() != null) {
+            this.option = dto.getOption();
+        }
     }
 
 

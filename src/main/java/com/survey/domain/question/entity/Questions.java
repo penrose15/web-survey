@@ -18,8 +18,6 @@ public class Questions {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
-    private Integer questionSequence;
 
     @Column(nullable = false)
     private Long surveyId;

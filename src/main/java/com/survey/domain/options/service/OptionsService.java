@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static com.survey.domain.question.entity.QuestionType.FIVE_MULTIPLE_CHOICE;
 
@@ -22,33 +23,48 @@ public class OptionsService {
     private final OptionRepository optionRepository;
     private final QuestionService questionService;
 
-    public void createQuestionAndOptions(List<QuestionOptionsRequestDto> requests, Long surveyId, String email) {
-        int questionSequence = 1;
-        for (QuestionOptionsRequestDto request : requests) {
-            QuestionRequestDto questionRequestDto = request.getQuestion();
-            Questions questions = questionService.createQuestion(questionRequestDto, surveyId, email, questionSequence);
-            questionSequence += 1;
-            // 5지선다인 경우
-            if(questions.getQuestionType().equals(FIVE_MULTIPLE_CHOICE)) {
-                List<OptionsRequestDto> optionsRequestDtos = request.getOptions();
-                createOptions(questions.getId(), optionsRequestDtos);
-            }
-            else {
-                throw new IllegalArgumentException("서술형일 경우 추가 불가");
-            }
-        }
+
+    public Long createOption(Long questionId, OptionsRequestDto option) {
+        Options options = Options.builder()
+                .option(option.getOption())
+                .questionId(questionId)
+                .build();
+        options = optionRepository.save(options);
+
+        return options.getId();
     }
 
-    private void createOptions(Long questionId, List<OptionsRequestDto> optionsRequestDtos) {
-        int optionsSequence = 1;
+    public void createOptions(Long questionId, List<OptionsRequestDto> optionsRequestDtos) {
+
         for (OptionsRequestDto option : optionsRequestDtos) {
             Options options = Options.builder()
                     .option(option.getOption())
                     .questionId(questionId)
-                    .sequence(optionsSequence)
                     .build();
             optionRepository.save(options);
-            optionsSequence += 1;
         }
     }
+    public Long updateOptions(Long optionsId, OptionsRequestDto requestDto) {
+        Options options = getOptions(optionsId);
+        options.updateOption(requestDto);
+
+        optionRepository.save(options);
+
+        return options.getId();
+    }
+
+    public void deleteOptions(Long optionsId) {
+        Options options = getOptions(optionsId);
+        optionRepository.deleteById(optionsId);
+    }
+
+    private Options getOptions(Long optionsId) {
+        Options options = optionRepository.findById(optionsId)
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 options"));
+        return options;
+    }
+
+
+
+
 }
