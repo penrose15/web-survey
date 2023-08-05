@@ -1,4 +1,4 @@
-package com.survey.domain.user_role;
+package com.survey.domain.user.entity;
 
 import lombok.Getter;
 

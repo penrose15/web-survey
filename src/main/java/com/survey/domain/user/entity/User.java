@@ -2,7 +2,6 @@ package com.survey.domain.user.entity;
 
 
 import com.survey.domain.audit.BaseEntity;
-import com.survey.domain.user_role.Roles;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;

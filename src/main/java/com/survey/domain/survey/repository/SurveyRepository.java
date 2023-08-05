@@ -15,14 +15,6 @@ public interface SurveyRepository extends JpaRepository<Survey, Long> {
             "from Survey s " +
             "join User u " +
             "on s.user.id = u.id " +
-            "where u.email = :email " +
-            "and s.id = :id")
-    Optional<Survey> findByIdAndUserEmail(Long id, String email);
-
-    @Query("select s " +
-            "from Survey s " +
-            "join User u " +
-            "on s.user.id = u.id " +
             "where u.email = :email")
     Page<Survey> findByUserEmail(String email, Pageable pageable);
 }

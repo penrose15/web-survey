@@ -4,13 +4,11 @@ import com.survey.domain.user.dto.UserResponseDTO;
 import com.survey.domain.user.repository.UserRepository;
 import com.survey.domain.user.dto.UserRequestDto;
 import com.survey.domain.user.entity.User;
-import com.survey.domain.user_role.Roles;
+import com.survey.domain.user.entity.Roles;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.awt.desktop.OpenFilesEvent;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
