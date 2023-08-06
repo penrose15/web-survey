@@ -18,7 +18,7 @@ public interface ParticipantsRepository extends JpaRepository<Participants, Long
     Optional<ParticipantsResponseDto> findByParticipantsId(Long id);
 
     @Query("SELECT " +
-            "com.survey.domain.participant.dto.ParticipantsResponseDto(p.id, p.name, p.email, p.surveyId, p.number) " +
+            "new com.survey.domain.participant.dto.ParticipantsResponseDto(p.id, p.name, p.email, p.surveyId, p.number) " +
             "FROM Participants p " +
             "WHERE p.surveyId = :surveyId " +
                 "AND p.surveyDone = true ")

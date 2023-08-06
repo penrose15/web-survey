@@ -9,8 +9,7 @@ import java.util.List;
 public interface OptionRepository extends JpaRepository<Options, Long> {
 
     @Query("SELECT o " +
-            "FROM Options " +
-            "WHERE o.questionId = :questionId " +
-            "ORDER BY o.sequence ASC")
+            "FROM Options o " +
+            "WHERE o.questionId = :questionId ")
     List<Options> findAllByQuestionId(Long questionId);
 }

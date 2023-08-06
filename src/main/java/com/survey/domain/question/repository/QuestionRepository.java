@@ -8,8 +8,7 @@ import java.util.List;
 
 public interface QuestionRepository extends JpaRepository<Questions, Long> {
 
-    @Query("SELECT q FROM Questions q" +
-            "WHERE q.surveyId = :surveyId " +
-            "ORDER BY q.questionSequence ASC")
+    @Query("SELECT q FROM Questions q " +
+            "WHERE q.surveyId = :surveyId ")
     List<Questions> findAllBySurveyId(Long surveyId);
 }

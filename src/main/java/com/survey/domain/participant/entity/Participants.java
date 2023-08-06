@@ -32,7 +32,8 @@ public class Participants {
     @Column(nullable = false)
     private boolean surveyDone;
 
-    @Column(columnDefinition = "선착순 몇번째?")
+    // 선착순 몇번째?
+    @Column
     private Integer number;
 
     @Builder
