@@ -1,11 +1,9 @@
 package com.survey.domain.options.service;
 
 import com.survey.domain.options.dto.OptionsRequestDto;
-import com.survey.domain.options.dto.QuestionOptionsRequestDto;
+import com.survey.domain.options.dto.OptionsResponseDto;
 import com.survey.domain.options.entity.Options;
 import com.survey.domain.options.repository.OptionRepository;
-import com.survey.domain.question.dto.QuestionRequestDto;
-import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.service.QuestionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import static com.survey.domain.question.entity.QuestionType.FIVE_MULTIPLE_CHOICE;
+import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
@@ -56,6 +53,22 @@ public class OptionsService {
     public void deleteOptions(Long optionsId) {
         Options options = getOptions(optionsId);
         optionRepository.deleteById(optionsId);
+    }
+
+    public void deleteOptionsByQuestionId(Long questionId) {
+        List<Options> optionsList = findAllByQuestionsId(questionId);
+
+        optionRepository.deleteAll(optionsList);
+    }
+
+    public List<Options> findAllByQuestionIds(List<Long> questionIds) {
+        return optionRepository.findOptionsList(questionIds);
+
+    }
+
+    public List<Options> findAllByQuestionsId(Long questionId) {
+
+        return optionRepository.findAllByQuestionId(questionId);
     }
 
     private Options getOptions(Long optionsId) {
