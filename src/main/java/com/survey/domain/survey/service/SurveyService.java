@@ -29,11 +29,15 @@ public class SurveyService {
     public Long createSurvey(String email, SurveyCreateDTO request) {
         User user = userFindService.findByEmail(email);
 
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime startAt = LocalDateTime.parse(request.getStartAt(), format);
+        LocalDateTime endAt = LocalDateTime.parse(request.getEndAt(), format);
+
         Survey survey = Survey.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .startAt(LocalDateTime.parse(request.getStartAt()))
-                .endAt(LocalDateTime.parse(request.getEndAt()))
+                .startAt(startAt)
+                .endAt(endAt)
                 .userLimit(request.getUserLimit())
                 .user(user)
                 .categoryId(request.getCategoryId())

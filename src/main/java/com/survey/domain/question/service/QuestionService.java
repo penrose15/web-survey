@@ -1,14 +1,16 @@
 package com.survey.domain.question.service;
 
-import com.survey.domain.options.entity.Options;
 import com.survey.domain.options.repository.OptionRepository;
 import com.survey.domain.question.dto.QuestionRequestDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.repository.QuestionRepository;
-import com.survey.domain.survey.entity.Survey;
 import com.survey.domain.survey.service.SurveyFindService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -44,7 +46,12 @@ public class QuestionService {
     }
 
     public List<Questions> findBySurveyId(Long surveyId) {
-        return questionRepository.findAllBySurveyId(surveyId);
+        return questionRepository.findListBySurveyId(surveyId);
+    }
+
+    public Page<Questions> findPageBySurveyId(Long surveyId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "id");
+        return questionRepository.findPageBySurveyId(pageable, surveyId);
     }
 
     //조회는 options와 같이 보여줘야 할 것 같아서 패스
@@ -54,14 +61,13 @@ public class QuestionService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 question"));
     }
 
+
     public void deleteById(Long questionId) {
         Questions question = findById(questionId);
         questionRepository.deleteById(questionId);
+    }
 
-        List<Options> OptionsList = optionRepository.findAllByQuestionId(questionId);
-
-        for (Options options : OptionsList) {
-            optionRepository.deleteById(options.getId());
-        }
+    public void deleteQuestionByQuestionIdList(List<Long> questionIdList) {
+        questionRepository.deleteAllById(questionIdList);
     }
 }

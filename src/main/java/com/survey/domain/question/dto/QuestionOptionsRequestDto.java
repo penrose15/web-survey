@@ -1,7 +1,9 @@
-package com.survey.domain.options.dto;
+package com.survey.domain.question.dto;
 
+import com.survey.domain.options.dto.OptionsRequestDto;
 import com.survey.domain.question.dto.QuestionRequestDto;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

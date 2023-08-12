@@ -2,10 +2,7 @@ package com.survey.domain.options.entity;
 
 import com.survey.domain.options.dto.OptionsRequestDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Entity

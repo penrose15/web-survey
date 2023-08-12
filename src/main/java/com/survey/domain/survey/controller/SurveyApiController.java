@@ -6,6 +6,7 @@ import com.survey.domain.survey.dto.SurveyUpdateDTO;
 import com.survey.domain.survey.service.SurveyService;
 import com.survey.domain.user.entity.User;
 import com.survey.global.response.MultiResponseDto;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -22,21 +23,24 @@ public class SurveyApiController {
 
     private final SurveyService surveyService;
 
+
     @PostMapping
-    public Long createSurvey(@AuthenticationPrincipal User user,
+    public ResponseEntity<Long> createSurvey(@AuthenticationPrincipal User user,
                              @RequestBody SurveyCreateDTO request) {
         String email = user.getEmail();
 
-        return surveyService.createSurvey(email, request);
+        Long surveyId = surveyService.createSurvey(email, request);
+
+        return ResponseEntity.ok(surveyId);
     }
 
     @PatchMapping("/{id}")
-    public Long updateSurvey(@AuthenticationPrincipal User user,
+    public ResponseEntity<Long> updateSurvey(@AuthenticationPrincipal User user,
                              @PathVariable Long id,
                              @RequestBody SurveyUpdateDTO request) {
         String email = user.getEmail();
-        return surveyService.updateSurvey(id, email, request);
-
+        Long surveyId =  surveyService.updateSurvey(id, email, request);
+        return ResponseEntity.ok(surveyId);
     }
 
     @GetMapping

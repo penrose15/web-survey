@@ -1,9 +1,6 @@
 package com.survey.global.security.jwt;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.io.Encoders;
 import io.jsonwebtoken.security.Keys;
@@ -14,6 +11,10 @@ import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -23,16 +24,16 @@ import java.util.Map;
 @Slf4j
 public class JwtTokenizer {
 
-    protected Key key;
-
-    @Getter
-    @Value("${jwt.access-token-expiration-minutes}")
-    private long accessTokenExpirationMinutes;
+    private final Key key;
 
     public JwtTokenizer(@Value("${jwt.secret}")String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
+
+    @Getter
+    @Value("${jwt.access-token-expiration-minutes}")
+    private long accessTokenExpirationMinutes;
 
     public String encodeBase64SecretKey(String secretKey) {
         return Encoders.BASE64.encode(secretKey.getBytes(StandardCharsets.UTF_8));
@@ -41,15 +42,16 @@ public class JwtTokenizer {
     public String generateAccessToken(Map<String, Object> claims,
                                       String subject) {
 
+        LocalDateTime dateTime = LocalDateTime.now().plus(Duration.of(accessTokenExpirationMinutes, ChronoUnit.MINUTES));
         Date now = new Date();
-        Date expiration = new Date(now.getTime() + this.accessTokenExpirationMinutes);
+        Date expiration = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
 
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(now)
                 .setExpiration(expiration)
-                .signWith(key)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
     }
 

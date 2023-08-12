@@ -51,8 +51,11 @@ public class WebSecurityConfig {
                 .logout(logout -> logout.logoutSuccessUrl("/login")
                 .invalidateHttpSession(true));
         http.csrf(AbstractHttpConfigurer::disable);
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/articles","/login", "/signup", "/user","/api/login").permitAll()
-                .anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/articles",
+                        "/login", "/signup", "/swagger-ui/**","/swagger-ui.html","/api-docs/**","/user","/api/login").permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/survey/**").hasRole("USER").anyRequest().authenticated());
+
+
 
         return http.build();
     }
