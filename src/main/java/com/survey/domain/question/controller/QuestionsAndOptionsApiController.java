@@ -8,8 +8,10 @@ import com.survey.domain.question.service.QuestionService;
 import com.survey.domain.survey.service.SurveyFindService;
 import com.survey.domain.user.entity.User;
 import com.survey.global.response.MultiResponseDto;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +22,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RequestMapping("/survey")
+@Tag(name = "QuestionsAndOptionsApiController", description = "설문지 작성/수정/조회/삭제")
 @RestController
 public class QuestionsAndOptionsApiController {
     private final QuestionService questionService;
@@ -69,9 +72,18 @@ public class QuestionsAndOptionsApiController {
                 .body(response);
     }
 
+    @DeleteMapping("/{survey-id}/forms/{question-id}")
+    public ResponseEntity<Void> deleteQuestionAndOption(@PathVariable("survey-id") Long surveyId,
+                                                        @PathVariable("question-id") Long questionId,
+                                                        @AuthenticationPrincipal User user){
+        verifySurvey(user.getEmail(), surveyId);
+        questionAndOptionService.deleteByQuestionId(questionId);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{survey-id}/question/clear")
     public ResponseEntity<Void> deleteQuestionAndOptions(@PathVariable("survey-id") Long surveyId,
-                                                         @RequestBody QuestionAndOptionUpdateDto request,
                                                          @AuthenticationPrincipal User user) {
         verifySurvey(user.getEmail(), surveyId);
         questionAndOptionService.deleteAllBySurveyId(surveyId);

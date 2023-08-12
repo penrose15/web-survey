@@ -130,6 +130,11 @@ public class QuestionAndOptionService {
                 .build();
     }
 
+    public void deleteByQuestionId(Long questionId) {
+        optionsService.deleteOptionsByQuestionId(questionId);
+        questionService.deleteById(questionId);
+    }
+
 
     public void deleteAllBySurveyId(Long surveyId) {
         List<Questions> questionsList = questionService.findBySurveyId(surveyId);

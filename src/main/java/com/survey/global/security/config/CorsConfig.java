@@ -20,8 +20,8 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.setAllowedOrigins(
                 Arrays.asList(
-                "http://localhost:3000",
-                "http://localhost:8080/h2")
+                "http://localhost:3000/",
+                "http://localhost:8080/")
         );
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");

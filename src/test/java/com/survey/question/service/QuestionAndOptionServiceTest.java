@@ -1,19 +1,15 @@
 package com.survey.question.service;
 
-import com.google.gson.Gson;
 import com.survey.domain.options.dto.OptionsResponseDto;
 import com.survey.domain.options.entity.Options;
 import com.survey.domain.options.repository.OptionRepository;
-import com.survey.domain.options.service.OptionsService;
 import com.survey.domain.question.dto.QuestionOptionResponseDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.repository.QuestionRepository;
 import com.survey.domain.question.service.QuestionAndOptionService;
-import com.survey.domain.question.service.QuestionService;
 import com.survey.domain.survey.entity.Survey;
 import com.survey.domain.survey.repository.SurveyRepository;
-import com.survey.domain.survey.service.SurveyService;
 import com.survey.domain.user.entity.Roles;
 import com.survey.domain.user.entity.User;
 import com.survey.domain.user.repository.UserRepository;
