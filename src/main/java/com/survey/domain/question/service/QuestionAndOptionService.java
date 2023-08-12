@@ -42,37 +42,10 @@ public class QuestionAndOptionService {
         }
     }
 
-    public void updateQuestionsAndOptions(Long surveyId, QuestionAndOptionUpdateDto updateRequest, String email) {
-        List<QuestionOptionsRequestDto> questionOptionsRequestDtos = updateRequest.getAddQuestionAndOptions();
-        createQuestionAndOptions(questionOptionsRequestDtos, surveyId, email);
+    public void updateQuestionsAndOptions(Long surveyId, List<QuestionOptionsRequestDto> requests, String email) {
+        deleteAllBySurveyId(surveyId);
+        createQuestionAndOptions(requests, surveyId, email);
 
-        List<QuestionUpdateDto> questionUpdateDtos = updateRequest.getQuestionUpdateDtos();
-
-        for (QuestionUpdateDto questionUpdateDto : questionUpdateDtos) {
-            questionService.updateQuestion(questionUpdateDto.getQuestionRequestDto(), questionUpdateDto.getQuestionId(),surveyId, email);
-        }
-
-        List<OptionCreateDto> optionCreateDtos = updateRequest.getOptionsCreateDtos();
-        for (OptionCreateDto optionCreateDto : optionCreateDtos) {
-            optionsService.createOption(optionCreateDto.getQuestionId(), optionCreateDto.getOptionsRequestDto());
-        }
-
-        List<OptionUpdateDto> optionUpdateDtos = updateRequest.getOptionUpdateDtos();
-        for (OptionUpdateDto optionUpdateDto : optionUpdateDtos) {
-            optionsService.updateOptions(optionUpdateDto.getOptionId(), optionUpdateDto.getOptionsDto());
-        }
-
-        List<Long> deleteQuestionDto = updateRequest.getDeleteQuestionDto();
-        for (Long questionId : deleteQuestionDto) {
-            optionsService.deleteOptionsByQuestionId(questionId);
-//            questionService.deleteById(questionId);
-        }
-        questionService.deleteQuestionByQuestionIdList(deleteQuestionDto);
-
-        List<Long> deleteOptionsDto = updateRequest.getDeleteOptionsDto();
-        for (Long optionId : deleteOptionsDto) {
-            optionsService.deleteOptions(optionId);
-        }
     }
 
     public Page<QuestionOptionResponseDto> getQuestionsAndOptionsBySurveyId(int page, int size, Long surveyId) {

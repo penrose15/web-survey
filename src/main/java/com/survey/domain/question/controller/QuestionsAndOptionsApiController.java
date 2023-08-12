@@ -43,10 +43,10 @@ public class QuestionsAndOptionsApiController {
 
     @PatchMapping("/{survey-id}/question/correction")
     public ResponseEntity<Void> updateQuestionAndOptions(@PathVariable("survey-id") Long surveyId,
-                                                         @RequestBody QuestionAndOptionUpdateDto request,
+                                                         @RequestBody List<QuestionOptionsRequestDto> requests,
                                                          @AuthenticationPrincipal User user) {
         verifySurvey(user.getEmail(), surveyId);
-        questionAndOptionService.updateQuestionsAndOptions(surveyId, request, user.getEmail());
+        questionAndOptionService.updateQuestionsAndOptions(surveyId, requests, user.getEmail());
         log.info("update question and options");
 
         return ResponseEntity.ok().build();
