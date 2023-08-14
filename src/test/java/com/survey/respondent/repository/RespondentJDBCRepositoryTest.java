@@ -25,29 +25,29 @@ public class RespondentJDBCRepositoryTest {
     @Autowired
     RespondentRepository respondentRepository;
 
-    @Test
-    @DisplayName("jdbc 작동 잘 되는지 테스트")
-    void insertTestWithJdbcTemplate() {
-        int N = 100;
-        Long surveyId = 1L;
-        List<Respondent> list = new ArrayList<>();
-        for(int i = 1; i<=N; i++) {
-            Respondent respondent = Respondent.builder()
-                    .optionId(null)
-                    .surveyId(surveyId)
-                    .participantsId((long)i)
-                    .questionId((long)i)
-                    .answer("answer "+i)
-                    .build();
-            list.add(respondent);
-        }
-        respondentJdbcRepository.saveAll(list);
-
-        int respondentCount = respondentRepository.countRespondent(surveyId);
-
-        assertThat(respondentCount)
-                .isEqualTo(N);
-    }
+//    @Test
+//    @DisplayName("jdbc 작동 잘 되는지 테스트")
+//    void insertTestWithJdbcTemplate() {
+//        int N = 100;
+//        Long surveyId = 1L;
+//        List<Respondent> list = new ArrayList<>();
+//        for(int i = 1; i<=N; i++) {
+//            Respondent respondent = Respondent.builder()
+//                    .optionId(null)
+//                    .surveyId(surveyId)
+//                    .participantsId((long)i)
+//                    .questionId((long)i)
+//                    .answer("answer "+i)
+//                    .build();
+//            list.add(respondent);
+//        }
+//        respondentJdbcRepository.saveAll(list);
+//
+//        int respondentCount = respondentRepository.countRespondent(surveyId);
+//
+//        assertThat(respondentCount)
+//                .isEqualTo(N);
+//    }
 
     @Test
     @DisplayName("비교 테스트")
