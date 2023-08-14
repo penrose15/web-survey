@@ -70,4 +70,8 @@ public class QuestionService {
     public void deleteQuestionByQuestionIdList(List<Long> questionIdList) {
         questionRepository.deleteAllById(questionIdList);
     }
+
+    public int countQuestionsBySurveyId(Long surveyId) {
+        return questionRepository.countQuestionsBySurveyId(surveyId);
+    }
 }

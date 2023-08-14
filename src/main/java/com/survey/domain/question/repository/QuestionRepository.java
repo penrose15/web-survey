@@ -18,6 +18,9 @@ public interface QuestionRepository extends JpaRepository<Questions, Long> {
             "WHERE q.surveyId = :surveyId ")
     Page<Questions> findPageBySurveyId(Pageable pageable , Long surveyId);
 
-
+    @Query("SELECT COUNT(q.id) " +
+            "FROM Questions q " +
+            "WHERE q.surveyId = :surveyId ")
+    int countQuestionsBySurveyId(Long surveyId);
 
 }

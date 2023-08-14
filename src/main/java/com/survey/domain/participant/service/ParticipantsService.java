@@ -34,8 +34,6 @@ public class ParticipantsService {
     public Long updateParticipants(Long participantId, ParticipantRequestDto participantRequestDto) {
         Participants participants = getParticipants(participantId);
 
-        checkSurveyDone(participants);
-
         participants.updateParticipantInfo(participantRequestDto.getName(), participantRequestDto.getEmail());
 
         return participants.getId();
@@ -46,16 +44,20 @@ public class ParticipantsService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participants"));
     }
 
+    public Long changeParticipantStatus(Long participantId) {
+        Participants participants = getParticipants(participantId);
+        participants.checkParticipantSurveyHasDone();
+        participants.changeParticipantStatus();
+
+        participantsRepository.save(participants);
+
+        return participants.getId();
+    }
+
     public Page<ParticipantsResponseDto> findAllBySurveyId(Long surveyId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "number");
 
         return participantsRepository.findAllBySurveyIdAndSurveyDoneTrue(surveyId, pageable);
-    }
-
-    private void checkSurveyDone(Participants participants) {
-        if(participants.isSurveyDone()) {
-            throw new IllegalStateException("설문조사를 마친 이후에는 정보 수정이 불가능합니다.");
-        }
     }
 
     private Participants getParticipants(Long participantId) {

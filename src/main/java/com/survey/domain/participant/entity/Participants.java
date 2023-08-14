@@ -44,12 +44,23 @@ public class Participants {
         this.surveyId = surveyId;
     }
 
+    public void checkParticipantSurveyHasDone() {
+        if(this.surveyDone) throw new IllegalStateException("설문조사를 마친 사용자는 변경 불가능");
+    }
+
     public void updateParticipantInfo(String name, String email) {
+        checkParticipantSurveyHasDone();
+
         if(name != null) {
             this.name = name;
         }
         if(email != null) {
             this.email = email;
         }
+    }
+
+    public void changeParticipantStatus() {
+        checkParticipantSurveyHasDone();
+        this.surveyDone = true;
     }
 }

@@ -1,7 +1,6 @@
 package com.survey.domain.respondent.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,19 +16,24 @@ public class Respondent {
     private Long id;
 
     @Column(nullable = false)
-    private String respond;
+    private String answer;
+
+    @Column(nullable = false)
+    private Long surveyId;
 
     @Column(nullable = false)
     private Long questionId;
 
     private Long optionId;
 
+    @Column(nullable = false)
     private Long participantsId;
 
     @Builder
-    public Respondent(Long id, String respond, Long questionId, Long optionId, Long participantsId) {
+    public Respondent(Long id, String answer, Long surveyId, Long questionId, Long optionId, Long participantsId) {
         this.id = id;
-        this.respond = respond;
+        this.answer = answer;
+        this.surveyId = surveyId;
         this.questionId = questionId;
         this.optionId = optionId;
         this.participantsId = participantsId;
