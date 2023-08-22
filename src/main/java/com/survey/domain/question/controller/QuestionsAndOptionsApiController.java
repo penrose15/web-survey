@@ -1,6 +1,6 @@
 package com.survey.domain.question.controller;
 
-import com.survey.domain.question.dto.QuestionAndOptionUpdateDto;
+import com.survey.domain.question.dto.QuestionListRequestDto;
 import com.survey.domain.question.dto.QuestionOptionResponseDto;
 import com.survey.domain.question.dto.QuestionOptionsRequestDto;
 import com.survey.domain.question.service.QuestionAndOptionService;
@@ -11,7 +11,6 @@ import com.survey.global.response.MultiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -25,28 +24,35 @@ import java.util.List;
 @Tag(name = "QuestionsAndOptionsApiController", description = "설문지 작성/수정/조회/삭제")
 @RestController
 public class QuestionsAndOptionsApiController {
-    private final QuestionService questionService;
     private final QuestionAndOptionService questionAndOptionService;
     private final SurveyFindService surveyFindService;
 
     @PostMapping("/{survey-id}/question")
-    public ResponseEntity<Void> createQuestionsAndOptions(@PathVariable("survey-id") Long surveyId,
-                                                    @RequestBody List<QuestionOptionsRequestDto> requests,
+    public ResponseEntity<String> createQuestionsAndOptions(@PathVariable("survey-id") Long surveyId,
+                                                    @ModelAttribute QuestionListRequestDto requests,
                                                     @AuthenticationPrincipal User user) {
         verifySurvey(user.getEmail(), surveyId);
 
-        questionAndOptionService.createQuestionAndOptions(requests, surveyId, user.getEmail());
-        log.info("create questions and options");
+        try {
+            List<QuestionOptionsRequestDto> request = requests.getQuestionOptionsRequestDtos();
+            questionAndOptionService.createQuestionAndOptions(request, surveyId);
+            log.info("create questions and options");
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+
         return ResponseEntity.ok()
                 .build();
     }
 
     @PatchMapping("/{survey-id}/question/correction")
     public ResponseEntity<Void> updateQuestionAndOptions(@PathVariable("survey-id") Long surveyId,
-                                                         @RequestBody List<QuestionOptionsRequestDto> requests,
+                                                         @ModelAttribute QuestionListRequestDto requests,
                                                          @AuthenticationPrincipal User user) {
         verifySurvey(user.getEmail(), surveyId);
-        questionAndOptionService.updateQuestionsAndOptions(surveyId, requests, user.getEmail());
+        questionAndOptionService.updateQuestionsAndOptions(surveyId, requests.getQuestionOptionsRequestDtos(), user.getEmail());
         log.info("update question and options");
 
         return ResponseEntity.ok().build();
@@ -56,7 +62,7 @@ public class QuestionsAndOptionsApiController {
     public ResponseEntity showFormsBySurveyId(@PathVariable("survey-id") Long surveyId,
                                               @RequestParam("page") int page,
                                               @RequestParam("size") int size) {
-        Page<QuestionOptionResponseDto> responsePage = questionAndOptionService.getQuestionsAndOptionsBySurveyId(page, size, surveyId);
+        Page<QuestionOptionResponseDto> responsePage = questionAndOptionService.getQuestionsAndOptionsBySurveyId(page-1, size, surveyId);
         List<QuestionOptionResponseDto> responseList = responsePage.getContent();
 
         return ResponseEntity.ok()

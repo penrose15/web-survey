@@ -21,6 +21,12 @@ public interface ParticipantsRepository extends JpaRepository<Participants, Long
             "new com.survey.domain.participant.dto.ParticipantsResponseDto(p.id, p.name, p.email, p.surveyId, p.number) " +
             "FROM Participants p " +
             "WHERE p.surveyId = :surveyId " +
-                "AND p.surveyDone = true ")
-    Page<ParticipantsResponseDto> findAllBySurveyIdAndSurveyDoneTrue(Long surveyId, Pageable pageable);
+                "AND p.status <> com.survey.domain.participant.entity.SurveyStatus.NOT_FINISHED")
+    Page<ParticipantsResponseDto> findAllBySurveyIdAndSurveyDone(Long surveyId, Pageable pageable);
+
+    @Query("select count(p.id) " +
+            "from Participants p " +
+            "where p.surveyId = surveyId " +
+            "and p.status <> com.survey.domain.participant.entity.SurveyStatus.NOT_FINISHED")
+    int countParticipantSurveyDone(Long surveyId);
 }

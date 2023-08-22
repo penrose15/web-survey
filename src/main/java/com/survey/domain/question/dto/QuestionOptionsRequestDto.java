@@ -2,16 +2,15 @@ package com.survey.domain.question.dto;
 
 import com.survey.domain.options.dto.OptionsRequestDto;
 import com.survey.domain.question.dto.QuestionRequestDto;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Setter
+@NoArgsConstructor
 public class QuestionOptionsRequestDto {
     private QuestionRequestDto question;
     private List<OptionsRequestDto> options;

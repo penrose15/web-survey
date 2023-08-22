@@ -25,17 +25,19 @@ public class Respondent {
     private Long questionId;
 
     private Long optionId;
+    private Integer optionSequence;
 
     @Column(nullable = false)
     private Long participantsId;
 
     @Builder
-    public Respondent(Long id, String answer, Long surveyId, Long questionId, Long optionId, Long participantsId) {
+    public Respondent(Long id, String answer, Long surveyId, Long questionId, Long optionId, Integer optionSequence, Long participantsId) {
         this.id = id;
         this.answer = answer;
         this.surveyId = surveyId;
         this.questionId = questionId;
         this.optionId = optionId;
+        this.optionSequence = optionSequence;
         this.participantsId = participantsId;
     }
 }

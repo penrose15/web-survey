@@ -15,4 +15,5 @@ public class RespondentRequestDto {
     @NotNull
     private Long questionId;
     private Long optionId;
+    private Integer optionSequence;
 }

@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 public class Participants {
 
     @PrePersist
-    void setSurveyDone() {
-        this.surveyDone = false;
+    void setStatus() {
+        this.status = SurveyStatus.NOT_FINISHED;
     }
 
     @Id
@@ -29,23 +29,26 @@ public class Participants {
     @Column(nullable = false)
     private Long surveyId;
 
-    @Column(nullable = false)
-    private boolean surveyDone;
-
+    @Enumerated(EnumType.STRING)
+    private SurveyStatus status;
     // 선착순 몇번째?
     @Column
     private Integer number;
 
     @Builder
-    public Participants(Long id, String name, String email, Long surveyId) {
+    public Participants(Long id, String name, String email, Long surveyId, SurveyStatus status, Integer number) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.surveyId = surveyId;
+        this.status = status;
+        this.number = number;
     }
 
+
     public void checkParticipantSurveyHasDone() {
-        if(this.surveyDone) throw new IllegalStateException("설문조사를 마친 사용자는 변경 불가능");
+        if(this.status == SurveyStatus.NOT_IN_FCFS || this.status == SurveyStatus.IN_FCFS) throw new IllegalStateException("설문조사를 마친 사용자는 변경 불가능");
+
     }
 
     public void updateParticipantInfo(String name, String email) {
@@ -59,8 +62,18 @@ public class Participants {
         }
     }
 
-    public void changeParticipantStatus() {
+    public void changeParticipantStatus(SurveyStatus status) {
         checkParticipantSurveyHasDone();
-        this.surveyDone = true;
+        this.status = status;
+    }
+
+    public void setNumber(Integer number) {
+        if(number != null) {
+            if(this.number == null) {
+                this.number = number;
+            } else {
+                throw new IllegalArgumentException("이미 참가하였으면 다시 참가 불가");
+            }
+        }
     }
 }

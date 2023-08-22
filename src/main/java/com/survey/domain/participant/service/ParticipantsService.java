@@ -3,6 +3,7 @@ package com.survey.domain.participant.service;
 import com.survey.domain.participant.dto.ParticipantRequestDto;
 import com.survey.domain.participant.dto.ParticipantsResponseDto;
 import com.survey.domain.participant.entity.Participants;
+import com.survey.domain.participant.entity.SurveyStatus;
 import com.survey.domain.participant.repository.ParticipantsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,12 +26,12 @@ public class ParticipantsService {
                 .name(participantInfo.getName())
                 .email(participantInfo.getEmail())
                 .surveyId(surveyId)
+                .status(SurveyStatus.NOT_FINISHED)
                 .build();
         participants = participantsRepository.save(participants);
-        return participants.getId(); //저장된 participant 의 Id 는 쿠키에 저장한다.
+        return participants.getId();
     }
 
-    //쿠키에 저장한 participantId로 조회한다.
     public Long updateParticipants(Long participantId, ParticipantRequestDto participantRequestDto) {
         Participants participants = getParticipants(participantId);
 
@@ -44,10 +45,10 @@ public class ParticipantsService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participants"));
     }
 
-    public Long changeParticipantStatus(Long participantId) {
+    public Long changeParticipantStatus(Long participantId, Integer number, SurveyStatus status) {
         Participants participants = getParticipants(participantId);
-        participants.checkParticipantSurveyHasDone();
-        participants.changeParticipantStatus();
+        participants.changeParticipantStatus(status);
+        participants.setNumber(number);
 
         participantsRepository.save(participants);
 
@@ -57,11 +58,17 @@ public class ParticipantsService {
     public Page<ParticipantsResponseDto> findAllBySurveyId(Long surveyId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "number");
 
-        return participantsRepository.findAllBySurveyIdAndSurveyDoneTrue(surveyId, pageable);
+        return participantsRepository.findAllBySurveyIdAndSurveyDone(surveyId, pageable);
     }
 
     private Participants getParticipants(Long participantId) {
         return participantsRepository.findById(participantId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participant"));
+    }
+
+
+
+    public int participantCount(Long surveyId) {
+        return participantsRepository.countParticipantSurveyDone(surveyId);
     }
 }

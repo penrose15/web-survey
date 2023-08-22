@@ -17,6 +17,8 @@ public class Options {
     private String option;
     @Column(nullable = false)
     private Long questionId;
+    @Column
+    private Integer sequence;
 
     @Builder
     public Options(Long id, String option, Long questionId) {
@@ -30,6 +32,8 @@ public class Options {
             this.option = dto.getOption();
         }
     }
-
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
+    }
 
 }

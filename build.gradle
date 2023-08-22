@@ -16,10 +16,10 @@ configurations {
 		extendsFrom annotationProcessor
 	}
 }
-
 repositories {
 	mavenCentral()
 }
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc' //jdbcTemplate
@@ -32,12 +32,17 @@ dependencies {
 
 	implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webmvc-ui', version: '2.1.0'
 
+	implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
+	annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
 	compileOnly 'org.projectlombok:lombok'
 	runtimeOnly 'com.h2database:h2'
 	annotationProcessor 'org.projectlombok:lombok'
 
-
+	//aws s3 연동
+	implementation 'io.awspring.cloud:spring-cloud-starter-aws:2.4.4'
 
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'

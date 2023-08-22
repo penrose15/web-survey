@@ -1,8 +1,11 @@
 package com.survey.domain.survey.dto;
 
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class SurveyCreateDTO {
     private String title;
     private String description;

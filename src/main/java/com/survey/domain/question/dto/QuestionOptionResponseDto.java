@@ -17,6 +17,8 @@ public class QuestionOptionResponseDto {
     private Long id;
     private String title;
     private Long surveyId;
+    private String imageUrl;
     private QuestionType questionType;
+    private Integer questionSequence;
     private List<OptionsResponseDto> optionsList;
 }

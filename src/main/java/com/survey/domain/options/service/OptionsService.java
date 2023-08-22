@@ -32,12 +32,14 @@ public class OptionsService {
     }
 
     public void createOptions(Long questionId, List<OptionsRequestDto> optionsRequestDtos) {
-
+        int optionSequence = 1;
         for (OptionsRequestDto option : optionsRequestDtos) {
             Options options = Options.builder()
                     .option(option.getOption())
                     .questionId(questionId)
                     .build();
+            options.setSequence(optionSequence);
+            optionSequence += 1;
             optionRepository.save(options);
         }
     }

@@ -6,6 +6,7 @@ import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.repository.QuestionRepository;
 import com.survey.domain.survey.service.SurveyFindService;
+import com.survey.global.aws.AwsS3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,15 +23,23 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final OptionRepository optionRepository;
     private final SurveyFindService surveyFindService;
+    private final AwsS3Service awsS3Service;
 
-    public Questions createQuestion(QuestionRequestDto questionRequestDto, Long surveyId, String email) {
+    public Questions createQuestion(QuestionRequestDto questionRequestDto, Long surveyId, Integer sequence) {
+        String filename = awsS3Service.getFileName(questionRequestDto.getMultipartFile());
+        String url = awsS3Service.uploadFile(questionRequestDto.getMultipartFile());
+
+        String title = questionRequestDto.getQuestionDto().getTitle();
+        String questionType = questionRequestDto.getQuestionDto().getQuestionType();
 
         Questions questions = Questions.builder()
-                .title(questionRequestDto.getTitle())
+                .title(title)
                 .surveyId(surveyId)
-                .questionType(QuestionType.getQuestionType(questionRequestDto.getQuestionType()))
+                .questionType(QuestionType.getQuestionType(questionType))
+                .imageName(filename)
+                .imageUrl(url)
                 .build();
-
+        questions.setSequence(sequence);
         questions = questionRepository.save(questions);
         return questions;
     }
@@ -38,7 +47,10 @@ public class QuestionService {
     public Long updateQuestion(QuestionRequestDto questionRequestDto, Long questionId, Long surveyId, String email) {
         surveyFindService.findByIdAndEmail(email, surveyId);
         Questions questions = findById(questionId);
-        questions.updateQuestion(questions.getTitle(), questionRequestDto.getQuestionType());
+        String title = questionRequestDto.getQuestionDto().getTitle();
+        String questionType = questionRequestDto.getQuestionDto().getQuestionType();
+
+        questions.updateQuestion(title, questionType);
 
         questions = questionRepository.save(questions);
 

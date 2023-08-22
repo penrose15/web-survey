@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,12 +26,14 @@ public class QuestionAndOptionService {
     private final QuestionService questionService;
     private final OptionsService optionsService;
 
-    public void createQuestionAndOptions(List<QuestionOptionsRequestDto> requests, Long surveyId, String email) {
+    public void createQuestionAndOptions(List<QuestionOptionsRequestDto> requests, Long surveyId) {
 
+
+        int questionSequence = 1;
         for (QuestionOptionsRequestDto request : requests) {
             QuestionRequestDto questionRequestDto = request.getQuestion();
-            Questions questions = questionService.createQuestion(questionRequestDto, surveyId, email);
-
+            Questions questions = questionService.createQuestion(questionRequestDto, surveyId, questionSequence);
+            questionSequence += 1;
             // 5지선다인 경우
             if(questions.getQuestionType().equals(FIVE_MULTIPLE_CHOICE)) {
                 List<OptionsRequestDto> optionsRequestDtos = request.getOptions();
@@ -44,7 +47,7 @@ public class QuestionAndOptionService {
 
     public void updateQuestionsAndOptions(Long surveyId, List<QuestionOptionsRequestDto> requests, String email) {
         deleteAllBySurveyId(surveyId);
-        createQuestionAndOptions(requests, surveyId, email);
+        createQuestionAndOptions(requests, surveyId);
 
     }
 
@@ -60,7 +63,9 @@ public class QuestionAndOptionService {
                         .id(q.getId())
                         .title(q.getTitle())
                         .surveyId(q.getSurveyId())
+                        .imageUrl(q.getImageUrl())
                         .questionType(q.getQuestionType())
+                        .questionSequence(q.getSequence())
                         .optionsList(optionsMap.getOrDefault(q.getId(), Collections.emptyList()))
                         .build()).toList();
 
@@ -74,6 +79,7 @@ public class QuestionAndOptionService {
                         Collectors.mapping(o -> OptionsResponseDto.builder()
                                 .id(o.getId())
                                 .options(o.getOption())
+                                .optionSequence(o.getSequence())
                                 .build(), Collectors.toList())
                 ));
     }
@@ -92,6 +98,7 @@ public class QuestionAndOptionService {
                 .map(o -> OptionsResponseDto.builder()
                         .id(o.getId())
                         .options(o.getOption())
+                        .optionSequence(o.getSequence())
                         .build()).toList();
 
         return QuestionOptionResponseDto.builder()
@@ -99,6 +106,8 @@ public class QuestionAndOptionService {
                 .title(question.getTitle())
                 .questionType(question.getQuestionType())
                 .surveyId(question.getSurveyId())
+                .imageUrl(question.getImageUrl())
+                .questionSequence(question.getSequence())
                 .optionsList(optionsResponseDtoList)
                 .build();
     }

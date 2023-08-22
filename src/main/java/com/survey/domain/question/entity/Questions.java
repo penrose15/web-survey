@@ -1,6 +1,5 @@
 package com.survey.domain.question.entity;
 
-import com.survey.domain.survey.entity.Survey;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,11 +21,18 @@ public class Questions {
     @Column(nullable = false)
     private Long surveyId;
 
+    @Column
+    private String imageName;
+
+    @Column
+    private String imageUrl;
+
+    @Column
+    private Integer sequence;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
-
-
 
     public void updateQuestion(String title, String type) {
         if(title != null) {
@@ -35,5 +41,9 @@ public class Questions {
         if(type != null) {
             this.questionType = QuestionType.getQuestionType(type);
         }
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
     }
 }
