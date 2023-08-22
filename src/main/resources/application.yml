@@ -20,7 +20,7 @@ spring:
       max-request-size: 20MB # 전송하려는 총 파일 크기
 
 jwt:
-  secret:
+  secret: 2dae84f846e4f4b158a8d26681707f4338495bc7ab68151d7f7679cc5e56202dd3da0d356da007a7c28cb0b780418f4f3246769972d6feaa8f610c7d1e7ecf6a
   key: jwt
   access-token-expiration-minutes: 10
   refresh-token-expiration-minutes: 180
