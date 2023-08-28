@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 
-public interface QuestionRepository extends JpaRepository<Questions, Long> {
+public interface QuestionsRepository extends JpaRepository<Questions, Long> {
 
     @Query("SELECT q FROM Questions q " +
             "WHERE q.surveyId = :surveyId ")
@@ -22,5 +22,6 @@ public interface QuestionRepository extends JpaRepository<Questions, Long> {
             "FROM Questions q " +
             "WHERE q.surveyId = :surveyId ")
     int countQuestionsBySurveyId(Long surveyId);
+
 
 }

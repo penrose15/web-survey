@@ -2,11 +2,11 @@ package com.survey.question.service;
 
 import com.survey.domain.options.dto.OptionsResponseDto;
 import com.survey.domain.options.entity.Options;
-import com.survey.domain.options.repository.OptionRepository;
+import com.survey.domain.options.repository.OptionsRepository;
 import com.survey.domain.question.dto.QuestionOptionResponseDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
-import com.survey.domain.question.repository.QuestionRepository;
+import com.survey.domain.question.repository.QuestionsRepository;
 import com.survey.domain.question.service.QuestionAndOptionService;
 import com.survey.domain.survey.entity.Survey;
 import com.survey.domain.survey.repository.SurveyRepository;
@@ -28,10 +28,10 @@ public class QuestionAndOptionServiceTest {
     QuestionAndOptionService questionAndOptionService;
 
     @Autowired
-    QuestionRepository questionRepository;
+    QuestionsRepository questionsRepository;
 
     @Autowired
-    OptionRepository optionRepository;
+    OptionsRepository optionsRepository;
 
     @Autowired
     SurveyRepository surveyRepository;
@@ -71,7 +71,7 @@ public class QuestionAndOptionServiceTest {
                     .questionType(questionType)
                     .surveyId(survey.getId())
                     .build();
-            questions = questionRepository.save(questions);
+            questions = questionsRepository.save(questions);
             questionIds.add(questions.getId());
         }
 
@@ -82,7 +82,7 @@ public class QuestionAndOptionServiceTest {
                             .questionId(questionId)
                             .option(questionId + " : option "+(i+1))
                             .build();
-                    optionRepository.save(options);
+                    optionsRepository.save(options);
                     System.out.println("### " + questionId);
                 }
             }

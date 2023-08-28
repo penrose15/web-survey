@@ -1,10 +1,10 @@
 package com.survey.domain.question.service;
 
-import com.survey.domain.options.repository.OptionRepository;
+import com.survey.domain.options.repository.OptionsRepository;
 import com.survey.domain.question.dto.QuestionRequestDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
-import com.survey.domain.question.repository.QuestionRepository;
+import com.survey.domain.question.repository.QuestionsRepository;
 import com.survey.domain.survey.service.SurveyFindService;
 import com.survey.global.aws.AwsS3Service;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ import java.util.NoSuchElementException;
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
-    private final QuestionRepository questionRepository;
-    private final OptionRepository optionRepository;
+    private final QuestionsRepository questionsRepository;
+    private final OptionsRepository optionsRepository;
     private final SurveyFindService surveyFindService;
     private final AwsS3Service awsS3Service;
 
@@ -40,7 +40,7 @@ public class QuestionService {
                 .imageUrl(url)
                 .build();
         questions.setSequence(sequence);
-        questions = questionRepository.save(questions);
+        questions = questionsRepository.save(questions);
         return questions;
     }
 
@@ -52,38 +52,38 @@ public class QuestionService {
 
         questions.updateQuestion(title, questionType);
 
-        questions = questionRepository.save(questions);
+        questions = questionsRepository.save(questions);
 
         return questions.getId();
     }
 
     public List<Questions> findBySurveyId(Long surveyId) {
-        return questionRepository.findListBySurveyId(surveyId);
+        return questionsRepository.findListBySurveyId(surveyId);
     }
 
     public Page<Questions> findPageBySurveyId(Long surveyId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.Direction.ASC, "id");
-        return questionRepository.findPageBySurveyId(pageable, surveyId);
+        return questionsRepository.findPageBySurveyId(pageable, surveyId);
     }
 
     //조회는 options와 같이 보여줘야 할 것 같아서 패스
 
     public Questions findById(Long questionId) {
-        return questionRepository.findById(questionId)
+        return questionsRepository.findById(questionId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 question"));
     }
 
 
     public void deleteById(Long questionId) {
         Questions question = findById(questionId);
-        questionRepository.deleteById(questionId);
+        questionsRepository.deleteById(questionId);
     }
 
     public void deleteQuestionByQuestionIdList(List<Long> questionIdList) {
-        questionRepository.deleteAllById(questionIdList);
+        questionsRepository.deleteAllById(questionIdList);
     }
 
     public int countQuestionsBySurveyId(Long surveyId) {
-        return questionRepository.countQuestionsBySurveyId(surveyId);
+        return questionsRepository.countQuestionsBySurveyId(surveyId);
     }
 }

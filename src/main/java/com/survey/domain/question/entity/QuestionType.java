@@ -1,5 +1,7 @@
 package com.survey.domain.question.entity;
 
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -7,6 +9,7 @@ public enum QuestionType {
     FIVE_MULTIPLE_CHOICE("five_multiple_choice"),
     ESSAY("essay");
 
+    @Getter
     private String type;
 
     QuestionType(String type) {

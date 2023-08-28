@@ -3,7 +3,7 @@ package com.survey.domain.options.dto;
 import lombok.*;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class OptionsResponseDto {
     private Long id;
     private Integer optionSequence;

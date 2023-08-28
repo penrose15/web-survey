@@ -21,11 +21,13 @@ public class Options {
     private Integer sequence;
 
     @Builder
-    public Options(Long id, String option, Long questionId) {
+    public Options(Long id, String option, Long questionId, Integer sequence) {
         this.id = id;
         this.option = option;
         this.questionId = questionId;
+        this.sequence = sequence;
     }
+
 
     public void updateOption(OptionsRequestDto dto) {
         if(dto.getOption() != null) {

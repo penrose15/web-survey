@@ -15,7 +15,6 @@ public class Respondent {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String answer;
 
     @Column(nullable = false)

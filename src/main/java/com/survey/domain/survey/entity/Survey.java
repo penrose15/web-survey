@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 
@@ -25,9 +26,11 @@ public class Survey extends BaseEntity {
     @Column
     private String description; //설문지 설명
 
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Column(name = "start_at")
     private LocalDateTime startAt; //설문조사 시작 시간
 
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     @Column(name = "end_at")
     private LocalDateTime endAt; //설문조사 마감 시간
 

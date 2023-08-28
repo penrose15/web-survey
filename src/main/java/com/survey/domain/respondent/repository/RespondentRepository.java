@@ -21,4 +21,8 @@ public interface RespondentRepository extends JpaRepository<Respondent, Long> {
     Page<Respondent> findByParticipantsId(@Param(value = "participantsId") Long participantsId,
                                           @Param("surveyId") Long surveyId,
                                           Pageable pageable);
+    @Query("select r from Respondent r " +
+            "where r.participantsId = :participantsId ")
+    List<Respondent> findListByParticipantsId(@Param(value = "participantsId") Long participantsId);
+
 }

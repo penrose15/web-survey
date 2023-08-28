@@ -11,5 +11,5 @@ public class QuestionsResponseDto {
     private Long id;
     private String title;
     private Long surveyId;
-    private QuestionType questionType;
+    private String questionType;
 }

@@ -1,9 +1,8 @@
 package com.survey.domain.options.service;
 
 import com.survey.domain.options.dto.OptionsRequestDto;
-import com.survey.domain.options.dto.OptionsResponseDto;
 import com.survey.domain.options.entity.Options;
-import com.survey.domain.options.repository.OptionRepository;
+import com.survey.domain.options.repository.OptionsRepository;
 import com.survey.domain.question.service.QuestionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -11,13 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class OptionsService {
-    private final OptionRepository optionRepository;
+    private final OptionsRepository optionsRepository;
     private final QuestionService questionService;
 
 
@@ -26,7 +24,7 @@ public class OptionsService {
                 .option(option.getOption())
                 .questionId(questionId)
                 .build();
-        options = optionRepository.save(options);
+        options = optionsRepository.save(options);
 
         return options.getId();
     }
@@ -40,41 +38,41 @@ public class OptionsService {
                     .build();
             options.setSequence(optionSequence);
             optionSequence += 1;
-            optionRepository.save(options);
+            optionsRepository.save(options);
         }
     }
     public Long updateOptions(Long optionsId, OptionsRequestDto requestDto) {
         Options options = getOptions(optionsId);
         options.updateOption(requestDto);
 
-        optionRepository.save(options);
+        optionsRepository.save(options);
 
         return options.getId();
     }
 
     public void deleteOptions(Long optionsId) {
         Options options = getOptions(optionsId);
-        optionRepository.deleteById(optionsId);
+        optionsRepository.deleteById(optionsId);
     }
 
     public void deleteOptionsByQuestionId(Long questionId) {
         List<Options> optionsList = findAllByQuestionsId(questionId);
 
-        optionRepository.deleteAll(optionsList);
+        optionsRepository.deleteAll(optionsList);
     }
 
     public List<Options> findAllByQuestionIds(List<Long> questionIds) {
-        return optionRepository.findOptionsList(questionIds);
+        return optionsRepository.findOptionsList(questionIds);
 
     }
 
     public List<Options> findAllByQuestionsId(Long questionId) {
 
-        return optionRepository.findAllByQuestionId(questionId);
+        return optionsRepository.findAllByQuestionId(questionId);
     }
 
     private Options getOptions(Long optionsId) {
-        Options options = optionRepository.findById(optionsId)
+        Options options = optionsRepository.findById(optionsId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 options"));
         return options;
     }

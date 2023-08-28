@@ -61,6 +61,7 @@ public class ParticipantsService {
         return participantsRepository.findAllBySurveyIdAndSurveyDone(surveyId, pageable);
     }
 
+
     private Participants getParticipants(Long participantId) {
         return participantsRepository.findById(participantId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participant"));
