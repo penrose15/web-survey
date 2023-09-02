@@ -8,7 +8,8 @@ public enum SurveyStatus {
     NOT_FINISHED("not finished yet"),
     FINISHED("survey finished"),
     IN_FCFS("in FCFS"),
-    NOT_IN_FCFS("not in FCFS");
+    NOT_IN_FCFS("not in FCFS"),
+    DELETED("deleted");
 
     private String value;
 

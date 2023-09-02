@@ -4,8 +4,10 @@ import com.survey.domain.respondent.entity.Respondent;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,4 +27,8 @@ public interface RespondentRepository extends JpaRepository<Respondent, Long> {
             "where r.participantsId = :participantsId ")
     List<Respondent> findListByParticipantsId(@Param(value = "participantsId") Long participantsId);
 
+    @Transactional
+    @Modifying
+    @Query("delete from Respondent r where r.surveyId = :surveyId AND r.participantsId = :participantsId")
+    void deleteAllBySurveyIdAndParticipantId(@Param("surveyId")Long surveyId, @Param("participantsId")Long participantsId);
 }

@@ -40,6 +40,12 @@ public class ParticipantsService {
         return participants.getId();
     }
 
+    public Long updateParticipants(Participants participants) {
+        participantsRepository.save(participants);
+
+        return participants.getId();
+    }
+
     public ParticipantsResponseDto findById(Long id) {
         return participantsRepository.findByParticipantsId(id)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participants"));
@@ -62,7 +68,7 @@ public class ParticipantsService {
     }
 
 
-    private Participants getParticipants(Long participantId) {
+    public Participants getParticipants(Long participantId) {
         return participantsRepository.findById(participantId)
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participant"));
     }

@@ -10,8 +10,6 @@ import com.survey.domain.question.dto.QuestionAndOptionStatisticDto;
 import com.survey.domain.question.dto.QuestionOptionResponseDto;
 import com.survey.domain.question.dto.QuestionStatisticResponseDto;
 import com.survey.domain.question.dto.QuestionsResponseDto;
-import com.survey.domain.question.entity.Questions;
-import com.survey.domain.question.repository.QuestionsRepository;
 import com.survey.domain.question.repository.QuestionsRepositoryImpl;
 import com.survey.domain.question.service.QuestionAndOptionService;
 import com.survey.domain.respondent.dto.RespondentEssayDto;

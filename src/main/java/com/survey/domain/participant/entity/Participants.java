@@ -12,10 +12,9 @@ import lombok.NoArgsConstructor;
 public class Participants {
 
     @PrePersist
-    void setStatus() {
+    void prePersist() {
         this.status = SurveyStatus.NOT_FINISHED;
     }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

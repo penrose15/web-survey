@@ -1,6 +1,7 @@
 package com.survey.domain.question.service;
 
 import com.survey.domain.options.repository.OptionsRepository;
+import com.survey.domain.question.dto.QuestionDto;
 import com.survey.domain.question.dto.QuestionRequestDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
@@ -29,15 +30,15 @@ public class QuestionService {
         String filename = awsS3Service.getFileName(questionRequestDto.getMultipartFile());
         String url = awsS3Service.uploadFile(questionRequestDto.getMultipartFile());
 
-        String title = questionRequestDto.getQuestionDto().getTitle();
-        String questionType = questionRequestDto.getQuestionDto().getQuestionType();
+        QuestionDto question = questionRequestDto.getQuestionDto();
 
         Questions questions = Questions.builder()
-                .title(title)
+                .title(question.getTitle())
                 .surveyId(surveyId)
-                .questionType(QuestionType.getQuestionType(questionType))
+                .questionType(QuestionType.getQuestionType(question.getQuestionType()))
                 .imageName(filename)
                 .imageUrl(url)
+                .isEssential(question.isEssential())
                 .build();
         questions.setSequence(sequence);
         questions = questionsRepository.save(questions);
@@ -47,10 +48,9 @@ public class QuestionService {
     public Long updateQuestion(QuestionRequestDto questionRequestDto, Long questionId, Long surveyId, String email) {
         surveyFindService.findByIdAndEmail(email, surveyId);
         Questions questions = findById(questionId);
-        String title = questionRequestDto.getQuestionDto().getTitle();
-        String questionType = questionRequestDto.getQuestionDto().getQuestionType();
+        QuestionDto questionDto = questionRequestDto.getQuestionDto();
 
-        questions.updateQuestion(title, questionType);
+        questions.updateQuestion(questions.getTitle(), questionDto.getQuestionType(), questionDto.isEssential());
 
         questions = questionsRepository.save(questions);
 
@@ -75,7 +75,7 @@ public class QuestionService {
 
 
     public void deleteById(Long questionId) {
-        Questions question = findById(questionId);
+        Questions question = findById(questionId); //validation
         questionsRepository.deleteById(questionId);
     }
 

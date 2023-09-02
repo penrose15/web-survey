@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RespondentRequestDto {
 
-    @NotBlank
     private String answer;
     @NotNull
     private Long questionId;

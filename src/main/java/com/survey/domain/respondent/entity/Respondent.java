@@ -23,10 +23,13 @@ public class Respondent {
     @Column(nullable = false)
     private Long questionId;
 
+    @Column(name = "option_id")
     private Long optionId;
+
+    @Column(name = "option_sequence")
     private Integer optionSequence;
 
-    @Column(nullable = false)
+    @Column(name = "participants_id",nullable = false)
     private Long participantsId;
 
     @Builder
@@ -38,5 +41,17 @@ public class Respondent {
         this.optionId = optionId;
         this.optionSequence = optionSequence;
         this.participantsId = participantsId;
+    }
+
+    public void updateRespondent(String answer, Long optionId, Integer optionSequence) {
+        if(answer != null) {
+            this.answer = answer;
+        }
+        if(optionId != null) {
+            this.optionId = optionId;
+        }
+        if(optionSequence != null) {
+            this.optionSequence = optionSequence;
+        }
     }
 }

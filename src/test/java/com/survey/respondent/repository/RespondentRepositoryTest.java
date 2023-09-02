@@ -30,6 +30,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DataJpaTest
 @Import(TestConfig.class)
 public class RespondentRepositoryTest {
@@ -144,5 +146,82 @@ public class RespondentRepositoryTest {
             System.out.println();
         }
 
+    }
+
+    @Test
+    void deleteTest() {
+        User user = User.builder()
+                .email("test@gmail.com")
+                .password("password")
+                .role(Roles.USER)
+                .build();
+        user = userRepository.save(user);
+
+        Survey survey = Survey.builder()
+                .title("survey title")
+                .startAt(LocalDateTime.of(2023,9,9,12,0))
+                .endAt(LocalDateTime.of(2023,9,10,12,0))
+                .userLimit(10)
+                .user(user)
+                .build();
+        survey = surveyRepository.save(survey);
+
+        List<Questions> questionsList = new ArrayList<>();
+        for(int i = 0; i<3; i++) {
+            Questions questions = Questions.builder()
+                    .title("title "+ i)
+                    .surveyId(survey.getId())
+                    .sequence(i+1)
+                    .questionType(QuestionType.ESSAY)
+                    .build();
+            questions = questionsRepository.save(questions);
+            questionsList.add(questions);
+        }
+
+        Participants participants1 = Participants.builder()
+                .name("test participant")
+                .email("hello@gmail.com")
+                .surveyId(survey.getId())
+                .build();
+        Participants participants2 = Participants.builder()
+                .name("test participant")
+                .email("hello@gmail.com")
+                .surveyId(survey.getId())
+                .build();
+        participants1 = participantsRepository.save(participants1);
+        participants2 = participantsRepository.save(participants2);
+
+        List<Respondent> respondentList = new ArrayList<>();
+        for(int i = 0; i<questionsList.size(); i++) {
+            Questions questions = questionsList.get(i);
+
+            Respondent respondent = Respondent.builder()
+                    .participantsId(participants1.getId())
+                    .questionId(questions.getId())
+                    .surveyId(survey.getId())
+                    .answer("answer " + i)
+                    .build();
+            respondentList.add(respondent);
+
+            if(i == questionsList.size()-1) {
+                Respondent respondent2 = Respondent.builder()
+                        .participantsId(participants2.getId())
+                        .questionId(questions.getId())
+                        .surveyId(survey.getId())
+                        .answer("answer by participant2")
+                        .build();
+                respondentList.add(respondent2);
+            }
+        }
+        respondentList = respondentRepository.saveAll(respondentList);
+
+        System.out.println(respondentList.size());
+
+        respondentRepository.deleteAllBySurveyIdAndParticipantId(survey.getId(), participants1.getId());
+
+        List<Respondent> list = respondentRepository.findAll();
+
+        assertThat(list.size())
+                .isEqualTo(1);
     }
 }

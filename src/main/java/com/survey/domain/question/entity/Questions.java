@@ -17,7 +17,6 @@ public class Questions {
     @Column(nullable = false)
     private String title;
 
-
     @Column(nullable = false)
     private Long surveyId;
 
@@ -34,12 +33,18 @@ public class Questions {
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
 
-    public void updateQuestion(String title, String type) {
+    @Column(name = "essential")
+    private boolean isEssential;
+
+    public void updateQuestion(String title, String type, Boolean isEssential) {
         if(title != null) {
             this.title = title;
         }
         if(type != null) {
             this.questionType = QuestionType.getQuestionType(type);
+        }
+        if(isEssential != null) {
+            this.isEssential = isEssential;
         }
     }
 

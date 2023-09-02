@@ -25,51 +25,92 @@ public class RespondentJDBCRepositoryTest {
     @Autowired
     RespondentRepository respondentRepository;
 
-//    @Test
-//    @DisplayName("jdbc 작동 잘 되는지 테스트")
-//    void insertTestWithJdbcTemplate() {
-//        int N = 100;
-//        Long surveyId = 1L;
-//        List<Respondent> list = new ArrayList<>();
-//        for(int i = 1; i<=N; i++) {
-//            Respondent respondent = Respondent.builder()
-//                    .optionId(null)
-//                    .surveyId(surveyId)
-//                    .participantsId((long)i)
-//                    .questionId((long)i)
-//                    .answer("answer "+i)
-//                    .build();
-//            list.add(respondent);
-//        }
-//        respondentJdbcRepository.saveAll(list);
-//
-//        int respondentCount = respondentRepository.countRespondent(surveyId);
-//
-//        assertThat(respondentCount)
-//                .isEqualTo(N);
-//    }
+    @Test
+    @DisplayName("jdbc 작동 잘 되는지 테스트")
+    void insertTestWithJdbcTemplate() {
+        int N = 100;
+        Long surveyId = 1L;
+        List<Respondent> list = new ArrayList<>();
+        for(int i = 1; i<=N; i++) {
+            Respondent respondent = Respondent.builder()
+                    .optionId(null)
+                    .surveyId(surveyId)
+                    .participantsId((long)i)
+                    .questionId((long)i)
+                    .answer("answer "+i)
+                    .build();
+            list.add(respondent);
+        }
+        long beforeTime = System.currentTimeMillis();
+        respondentJdbcRepository.saveAll(list);
+        long afterTime = System.currentTimeMillis();
+        int respondentCount = respondentRepository.countRespondent(surveyId);
 
-//    @Test
-//    @DisplayName("비교 테스트")
-//    void insertTestWithJpa() {
-//        int N = 100;
-//        Long surveyId = 1L;
-//        List<Respondent> list = new ArrayList<>();
-//        for(int i = 1; i<=N; i++) {
-//            Respondent respondent = Respondent.builder()
-//                    .optionId(null)
-//                    .surveyId(surveyId)
-//                    .participantsId((long)i)
-//                    .questionId((long)i)
-//                    .answer("answer "+i)
-//                    .build();
-//            list.add(respondent);
-//        }
-//        respondentRepository.saveAll(list);
-//
-//        int respondentCount = respondentRepository.countRespondent(surveyId);
-//
-//        assertThat(respondentCount)
-//                .isEqualTo(N);
-//    }
+        System.out.println("# 시간차 : " + (afterTime - beforeTime));
+        assertThat(respondentCount)
+                .isEqualTo(N);
+    }
+
+    @Test
+    @DisplayName("비교 테스트")
+    void insertTestWithJpa() {
+        int N = 100;
+        Long surveyId = 1L;
+        List<Respondent> list = new ArrayList<>();
+        for(int i = 1; i<=N; i++) {
+            Respondent respondent = Respondent.builder()
+                    .optionId(null)
+                    .surveyId(surveyId)
+                    .participantsId((long)i)
+                    .questionId((long)i)
+                    .answer("answer "+i)
+                    .build();
+            list.add(respondent);
+        }
+        long beforeTime = System.currentTimeMillis();
+        respondentRepository.saveAll(list);
+        long afterTime = System.currentTimeMillis();
+
+        int respondentCount = respondentRepository.countRespondent(surveyId);
+
+        System.out.println("# 시간차 : " + (afterTime - beforeTime));
+        assertThat(respondentCount)
+                .isEqualTo(N);
+    }
+
+    @Test
+    void updateJdbcTest() {
+        int N = 100;
+        Long surveyId = 1L;
+        List<Respondent> list = new ArrayList<>();
+        for(int i = 1; i<=N; i++) {
+            Respondent respondent = Respondent.builder()
+                    .optionId(null)
+                    .surveyId(surveyId)
+                    .participantsId(1L)
+                    .questionId((long)i)
+                    .answer("answer "+i)
+                    .build();
+            list.add(respondent);
+        }
+        respondentJdbcRepository.saveAll(list);
+
+        List<Respondent> respondents = respondentRepository.findAll();
+        List<Respondent> updateList = new ArrayList<>();
+        for(int i = 1; i<=N; i++) {
+            Respondent respondent = respondents.get(i-1);
+            respondent.updateRespondent("update answer " + i, null, null);
+
+            updateList.add(respondent);
+        }
+
+        respondentJdbcRepository.updateAll(updateList);
+
+        List<Respondent> results = respondentRepository.findAll();
+
+        for (Respondent result : results) {
+            assertThat(result.getAnswer())
+                    .contains("update");
+        }
+    }
 }
