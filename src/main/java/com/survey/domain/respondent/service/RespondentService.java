@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -84,9 +85,7 @@ public class RespondentService {
 
     public void updateRespondent(List<RespondentUpdateDto> request, Long surveyId, Long participantId) {
         Survey survey = surveyFindService.findSurveyById(surveyId);
-        if(survey.getUserLimit() != -1) {
-            throw new IllegalArgumentException("선착순 설문조사인 경우 질문 수정이 불가능합니다.");
-        }
+        checkSurvey(survey);
 
         List<Respondent> respondents = respondentRepository.findListByParticipantsId(participantId);
         Map<Long, RespondentUpdateDto> respondentDtoMap = request.stream()
@@ -99,6 +98,19 @@ public class RespondentService {
             updateRespondentList.add(respondent);
         }
         respondentJdbcRepository.updateAll(updateRespondentList);
+
+    }
+
+    private void checkSurvey(Survey survey) {
+        if(survey.getUserLimit() != -1) {
+            throw new IllegalArgumentException("선착순 설문조사인 경우 질문 수정이 불가능합니다.");
+        }
+        LocalDateTime today = LocalDateTime.now();
+        LocalDateTime dueDate = survey.getEndAt();
+
+        if(today.isAfter(dueDate)) {
+            throw new IllegalStateException("기간이 지난 설문조사는 수정이 불가능합니다.");
+        }
 
     }
 

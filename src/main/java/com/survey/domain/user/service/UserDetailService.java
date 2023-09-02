@@ -1,6 +1,8 @@
 package com.survey.domain.user.service;
 
+import com.survey.domain.user.entity.User;
 import com.survey.domain.user.repository.UserRepository;
+import com.survey.global.adapter.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,7 +16,8 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        return userRepository.findByEmail(email)
+        User user =  userRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("email not found : " + email));
+        return new UserAdapter(user);
     }
 }
