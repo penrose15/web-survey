@@ -62,7 +62,9 @@ public class Participants {
     }
 
     public void changeParticipantStatus(SurveyStatus status) {
-        checkParticipantSurveyHasDone();
+        if(status != SurveyStatus.DELETED) {
+            checkParticipantSurveyHasDone();
+        }
         this.status = status;
     }
 

@@ -5,6 +5,7 @@ import com.survey.domain.survey.dto.SurveyResponsesDTO;
 import com.survey.domain.survey.dto.SurveyUpdateDTO;
 import com.survey.domain.survey.service.SurveyService;
 import com.survey.domain.user.entity.User;
+import com.survey.global.adapter.UserAdapter;
 import com.survey.global.response.MultiResponseDto;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +26,9 @@ public class SurveyApiController {
 
 
     @PostMapping
-    public ResponseEntity<Long> createSurvey(@AuthenticationPrincipal User user,
+    public ResponseEntity<Long> createSurvey(@AuthenticationPrincipal UserAdapter user,
                              @RequestBody SurveyCreateDTO request) {
-        String email = user.getEmail();
+        String email = user.getUsername();
 
         Long surveyId = surveyService.createSurvey(email, request);
 
@@ -35,10 +36,10 @@ public class SurveyApiController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Long> updateSurvey(@AuthenticationPrincipal User user,
-                             @PathVariable Long id,
+    public ResponseEntity<Long> updateSurvey(@AuthenticationPrincipal UserAdapter user,
+                             @PathVariable("id") Long id,
                              @RequestBody SurveyUpdateDTO request) {
-        String email = user.getEmail();
+        String email = user.getUsername();
         Long surveyId =  surveyService.updateSurvey(id, email, request);
         return ResponseEntity.ok(surveyId);
     }
@@ -46,8 +47,8 @@ public class SurveyApiController {
     @GetMapping
     public MultiResponseDto<SurveyResponsesDTO> findUserSurveys(@RequestParam int page,
                                             @RequestParam int size,
-                                            @AuthenticationPrincipal User user) {
-        Page<SurveyResponsesDTO> responsePage = surveyService.findAll(user.getEmail(), page - 1, size);
+                                            @AuthenticationPrincipal UserAdapter user) {
+        Page<SurveyResponsesDTO> responsePage = surveyService.findAll(user.getUsername(), page - 1, size);
 
         List<SurveyResponsesDTO> responseList = responsePage.getContent();
 
@@ -56,8 +57,8 @@ public class SurveyApiController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id,
-                                           @AuthenticationPrincipal User user) {
-        surveyService.deleteById(user.getEmail(), id);
+                                           @AuthenticationPrincipal UserAdapter user) {
+        surveyService.deleteById(user.getUsername(), id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

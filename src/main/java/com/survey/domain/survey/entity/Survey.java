@@ -72,11 +72,9 @@ public class Survey extends BaseEntity {
         }
     }
     //survey 수정
-    public void updateSurvey(String title, String description, String startAt, String endAt, Integer userLimit, Long categoryId) {
-        LocalDateTime startAt1 = startAt != null ? LocalDateTime.parse(startAt) : null;
-        LocalDateTime endAt1 = endAt != null ? LocalDateTime.parse(endAt) : null;
+    public void updateSurvey(String title, String description, LocalDateTime startAt, LocalDateTime endAt, Integer userLimit, Long categoryId) {
 
-        validateDateTime(startAt1, endAt1);
+        validateDateTime(startAt, endAt);
 
         if(title != null) {
             this.title = title;
@@ -84,11 +82,11 @@ public class Survey extends BaseEntity {
         if(description != null) {
             this.description = description;
         }
-        if(startAt1 != null) {
-            this.startAt = startAt1;
+        if(startAt != null) {
+            this.startAt = startAt;
         }
-        if(endAt1 != null) {
-            this.endAt = endAt1;
+        if(endAt != null) {
+            this.endAt = endAt;
         }
         if(userLimit != null) {
             this.userLimit = userLimit;
@@ -97,6 +95,8 @@ public class Survey extends BaseEntity {
             this.categoryId = categoryId;
         }
     }
+
+
 
 
 }

@@ -43,16 +43,13 @@ public class RespondentService {
         List<Respondent> respondents = new ArrayList<>();
         for (RespondentRequestDto request : requests) {
             //서술형인 경우 options가 null이므로
-            String answer = request.getAnswer() != null ? request.getAnswer() : null;
-            Long optionId = request.getOptionId() != null ? request.getOptionId() : null;
-            Integer optionSequence = request.getOptionSequence() != null ? request.getOptionSequence() : null;
-
             Respondent respondent = Respondent.builder()
-                    .answer(answer)
-                    .optionId(optionId)
+                    .answer(request.getAnswer())
+                    .questionId(request.getQuestionId())
+                    .optionId(request.getOptionId())
                     .participantsId(participantId)
                     .surveyId(surveyId)
-                    .optionSequence(optionSequence)
+                    .optionSequence(request.getOptionSequence())
                     .build();
             respondents.add(respondent);
         }

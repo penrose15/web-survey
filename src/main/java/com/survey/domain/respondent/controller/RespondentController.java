@@ -3,12 +3,9 @@ package com.survey.domain.respondent.controller;
 import com.survey.domain.respondent.dto.RespondentRequestDto;
 import com.survey.domain.respondent.dto.RespondentUpdateDto;
 import com.survey.domain.respondent.service.RespondentService;
-import com.survey.domain.survey.service.SurveyFindService;
-import com.survey.global.adapter.UserAdapter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +15,6 @@ import java.util.List;
 @RestController
 public class RespondentController {
     private final RespondentService respondentService;
-    private final SurveyFindService surveyFindService;
 
     @PostMapping //참가자 답변 생성
     public ResponseEntity<Void> createRespondent(@RequestParam("survey-id")Long surveyId,
@@ -44,10 +40,7 @@ public class RespondentController {
 
     @DeleteMapping // 유저만 삭제 가능
     public ResponseEntity<Void> deleteRespondent(@RequestParam("survey-id")Long surveyId,
-                                                 @RequestParam("participant-id") Long participantId,
-                                                 @AuthenticationPrincipal UserAdapter userAdapter) {
-        String email = userAdapter.getUsername();
-        surveyFindService.findByIdAndEmail(email, surveyId);
+                                                 @RequestParam("participant-id") Long participantId) {
         respondentService.deleteRespondent(surveyId, participantId);
 
         return ResponseEntity.noContent().build();

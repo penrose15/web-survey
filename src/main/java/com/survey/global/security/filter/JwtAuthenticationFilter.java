@@ -2,6 +2,7 @@ package com.survey.global.security.filter;
 
 import com.survey.domain.user.entity.User;
 import com.survey.domain.user.repository.UserRepository;
+import com.survey.global.adapter.UserAdapter;
 import com.survey.global.security.jwt.JwtTokenizer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -43,8 +44,8 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
-        User user = (User) authResult.getPrincipal();
-        String accessToken = delegateAccessToken(user.getEmail());
+        UserAdapter user = (UserAdapter) authResult.getPrincipal();
+        String accessToken = delegateAccessToken(user.getUsername());
 
         response.addHeader("Authorization","Bearer "+ accessToken);
         log.info("# add jwt at response header");

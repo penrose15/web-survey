@@ -29,9 +29,8 @@ public class SurveyService {
     public Long createSurvey(String email, SurveyCreateDTO request) {
         User user = userFindService.findByEmail(email);
 
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        LocalDateTime startAt = LocalDateTime.parse(request.getStartAt(), format);
-        LocalDateTime endAt = LocalDateTime.parse(request.getEndAt(), format);
+        LocalDateTime startAt = convertStringToTime(request.getStartAt());
+        LocalDateTime endAt = convertStringToTime(request.getEndAt());
 
         Survey survey = Survey.builder()
                 .title(request.getTitle())
@@ -53,7 +52,10 @@ public class SurveyService {
     public Long updateSurvey(Long surveyId, String email,SurveyUpdateDTO request) {
         Survey survey = surveyFindService.findByIdAndEmail(email, surveyId);
 
-        survey.updateSurvey(request.getTitle(), request.getDescription(), request.getStartAt(), request.getEndAt(), request.getUserLimit(), request.getCategoryId());
+        LocalDateTime startAt = convertStringToTime(request.getStartAt());
+        LocalDateTime endAt = convertStringToTime(request.getEndAt());
+
+        survey.updateSurvey(request.getTitle(), request.getDescription(), startAt, endAt, request.getUserLimit(), request.getCategoryId());
         survey = surveyRepository.save(survey);
 
         log.info("# update survey, id={}", survey.getId());
@@ -83,6 +85,12 @@ public class SurveyService {
 
         log.info("# delete survey, id={}", survey.getId());
         surveyRepository.deleteById(survey.getId());
+    }
+
+    private LocalDateTime convertStringToTime(String time) {
+        if(time == null) return null;
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        return LocalDateTime.parse(time, format);
     }
 
 }

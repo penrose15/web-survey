@@ -18,6 +18,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
@@ -44,6 +45,7 @@ public class WebSecurityConfig {
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         http.headers(header -> header.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable));
         http.apply(new CustomDsl());
+        http.cors(request -> new CorsConfiguration().applyPermitDefaultValues());
         http.httpBasic(AbstractHttpConfigurer::disable);
         http.formLogin(formLogin -> formLogin.loginPage("/login")
                 .defaultSuccessUrl("/articles")

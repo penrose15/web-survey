@@ -20,14 +20,14 @@ import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/survey")
+@RequestMapping("/question")
 @Tag(name = "QuestionsAndOptionsApiController", description = "설문지 작성/수정/조회/삭제")
 @RestController
 public class QuestionsAndOptionsApiController {
     private final QuestionAndOptionService questionAndOptionService;
     private final SurveyFindService surveyFindService;
 
-    @PostMapping("/{survey-id}/question")
+    @PostMapping("/{survey-id}")
     public ResponseEntity<String> createQuestionsAndOptions(@PathVariable("survey-id") Long surveyId,
                                                     @ModelAttribute QuestionListRequestDto requests,
                                                     @AuthenticationPrincipal User user) {
@@ -47,7 +47,7 @@ public class QuestionsAndOptionsApiController {
                 .build();
     }
 
-    @PatchMapping("/{survey-id}/question/correction")
+    @PatchMapping("/{survey-id}")
     public ResponseEntity<Void> updateQuestionAndOptions(@PathVariable("survey-id") Long surveyId,
                                                          @ModelAttribute QuestionListRequestDto requests,
                                                          @AuthenticationPrincipal User user) {
@@ -58,7 +58,7 @@ public class QuestionsAndOptionsApiController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{survey-id}/forms")
+    @GetMapping("/{survey-id}")
     public ResponseEntity showFormsBySurveyId(@PathVariable("survey-id") Long surveyId,
                                               @RequestParam("page") int page,
                                               @RequestParam("size") int size) {
@@ -69,7 +69,7 @@ public class QuestionsAndOptionsApiController {
                 .body(new MultiResponseDto<>(responseList, responsePage));
     }
 
-    @GetMapping("/{survey-id}/forms/{question-id}")
+    @GetMapping("/{survey-id}/{question-id}")
     public ResponseEntity showQuestionAndOptionsById(@PathVariable("survey-id") Long surveyId,
                                                      @PathVariable("question-id") Long id) {
         QuestionOptionResponseDto response = questionAndOptionService.getQuestionAndOptionsByQuestionId(id);
@@ -78,7 +78,7 @@ public class QuestionsAndOptionsApiController {
                 .body(response);
     }
 
-    @DeleteMapping("/{survey-id}/forms/{question-id}")
+    @DeleteMapping("/{survey-id}/{question-id}")
     public ResponseEntity<Void> deleteQuestionAndOption(@PathVariable("survey-id") Long surveyId,
                                                         @PathVariable("question-id") Long questionId,
                                                         @AuthenticationPrincipal User user){
@@ -88,7 +88,7 @@ public class QuestionsAndOptionsApiController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{survey-id}/question/clear")
+    @DeleteMapping("/{survey-id}")
     public ResponseEntity<Void> deleteQuestionAndOptions(@PathVariable("survey-id") Long surveyId,
                                                          @AuthenticationPrincipal User user) {
         verifySurvey(user.getEmail(), surveyId);
