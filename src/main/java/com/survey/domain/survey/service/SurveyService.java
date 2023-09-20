@@ -87,6 +87,10 @@ public class SurveyService {
         surveyRepository.deleteById(survey.getId());
     }
 
+    public void deleteByCategoryId(Long categoryId) {
+        surveyRepository.deleteByCategoryId(categoryId);
+    }
+
     private LocalDateTime convertStringToTime(String time) {
         if(time == null) return null;
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

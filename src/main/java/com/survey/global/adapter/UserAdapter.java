@@ -17,6 +17,7 @@ public class UserAdapter extends User {
 
     public UserAdapter(com.survey.domain.user.entity.User user) {
         super(user.getUsername(), user.getPassword(), authorities(user.getRole()));
+        this.user = user;
     }
 
     private static Collection<? extends GrantedAuthority> authorities(Roles roles) {
@@ -25,5 +26,13 @@ public class UserAdapter extends User {
         authorities.add(auth);
 
         return authorities;
+    }
+
+    public com.survey.domain.user.entity.User getUser() {
+        return user;
+    }
+
+    public String getUsername() {
+        return user.getUsername();
     }
 }

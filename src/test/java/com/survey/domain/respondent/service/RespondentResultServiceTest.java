@@ -1,10 +1,11 @@
-package com.survey.respondent.service;
+package com.survey.domain.respondent.service;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.survey.domain.options.dto.FiveMultipleChoiceStatisticDto;
 import com.survey.domain.options.entity.Options;
 import com.survey.domain.options.repository.OptionsRepository;
 import com.survey.domain.participant.entity.Participants;
+import com.survey.domain.participant.entity.SurveyStatus;
 import com.survey.domain.participant.repository.ParticipantsRepository;
 import com.survey.domain.question.dto.QuestionAndOptionStatisticDto;
 import com.survey.domain.question.entity.QuestionType;
@@ -22,6 +23,7 @@ import com.survey.domain.user.entity.Roles;
 import com.survey.domain.user.entity.User;
 import com.survey.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,8 +52,11 @@ public class RespondentResultServiceTest {
     @Autowired
     private RespondentResultService respondentResultService;
 
-    @Test
-    void getQuestionAndOptionStatisticBySurveyTest() {
+    private Survey survey;
+
+
+    @BeforeEach
+    void init() {
         User user = User.builder()
                 .email("test@gmail.com")
                 .password("password")
@@ -59,7 +64,7 @@ public class RespondentResultServiceTest {
                 .build();
         user = userRepository.save(user);
 
-        Survey survey = Survey.builder()
+        survey = Survey.builder()
                 .title("survey title")
                 .startAt(LocalDateTime.of(2023,9,9,12,0))
                 .endAt(LocalDateTime.of(2023,9,10,12,0))
@@ -111,7 +116,6 @@ public class RespondentResultServiceTest {
         participants1 = participantsRepository.save(participants1);
         participants2 = participantsRepository.save(participants2);
 
-        List<Respondent> respondentList = new ArrayList<>();
         for(int i = 0; i<questionsList.size(); i++) {
             Questions questions = questionsList.get(i);
 
@@ -156,6 +160,11 @@ public class RespondentResultServiceTest {
                 respondentRepository.save(respondent2);
             }
         }
+    }
+
+    @Test
+    void getQuestionAndOptionStatisticBySurveyTest() {
+
         List<QuestionAndOptionStatisticDto> response = respondentResultService.getQuestionAndOptionStatisticBySurvey(survey.getId());
         System.out.println("response size : " + response.size());
         for (QuestionAndOptionStatisticDto questionAndOptionStatisticDto : response) {

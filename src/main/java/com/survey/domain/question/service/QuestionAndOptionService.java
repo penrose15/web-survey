@@ -46,7 +46,7 @@ public class QuestionAndOptionService {
     }
 
     public void updateQuestionsAndOptions(Long surveyId, List<QuestionOptionsRequestDto> requests, String email) {
-        deleteAllBySurveyId(surveyId);
+        questionService.deleteBySurveyId(surveyId);
         createQuestionAndOptions(requests, surveyId);
 
     }
@@ -120,12 +120,10 @@ public class QuestionAndOptionService {
 
     public void deleteAllBySurveyId(Long surveyId) {
         List<Questions> questionsList = questionService.findBySurveyId(surveyId);
-        List<Long> questionIdList = questionsList.stream().mapToLong(Questions::getId)
+        List<Long> questionIds = questionsList.stream().mapToLong(Questions::getId)
                 .boxed().toList();
-        for (Long questionId : questionIdList) {
-            optionsService.deleteOptionsByQuestionId(questionId);
-        }
-        questionService.deleteQuestionByQuestionIdList(questionIdList);
+        optionsService.deleteOptionsByQuestionIds(questionIds);
+        questionService.deleteBySurveyId(surveyId);
     }
 
 }

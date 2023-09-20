@@ -10,13 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@RequestMapping("/participant")
 @RequiredArgsConstructor
 @RestController
 public class ParticipantsController {
     private final ParticipantsService participantsService;
 
-    @PostMapping("/{surveyId}/participants")
+    @PostMapping("/{surveyId}")
     public ResponseEntity createParticipants(@PathVariable Long surveyId,
                                              @RequestBody ParticipantRequestDto request) {
         Long participantsId = participantsService.createParticipants(surveyId, request);
@@ -24,16 +24,16 @@ public class ParticipantsController {
                 .body(participantsId);
     }
 
-    @PatchMapping("/{surveyId}/participants/{id}")
+    @PatchMapping("/{surveyId}/{participant-id}")
     public ResponseEntity updateParticipants(@PathVariable(value = "surveyId") Long surveyId,
-                                             @PathVariable(value = "id") Long id,
+                                             @PathVariable(value = "participant-id") Long id,
                                              @RequestBody ParticipantRequestDto request) {
         Long participantsId = participantsService.updateParticipants(id, request);
 
         return ResponseEntity.ok().body(participantsId);
     }
 
-    @GetMapping("/{surveyId}/participants")
+    @GetMapping("/{surveyId}")
     public ResponseEntity getParticipantsInfos(@PathVariable(value = "surveyId")Long surveyId,
                                                @RequestParam(defaultValue = "1") int page,
                                                @RequestParam(defaultValue = "10") int size) {

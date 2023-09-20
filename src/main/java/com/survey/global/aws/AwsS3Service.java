@@ -1,27 +1,24 @@
 package com.survey.global.aws;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.boot.Metadata;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class AwsS3Service {
-    private final AmazonS3 amazonS3Client;
+    private final S3Client s3Client;
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${spring.cloud.aws.s3.bucket}")
     private String bucketName;
 
     public String uploadFile(MultipartFile multipartFile) {
@@ -33,22 +30,25 @@ public class AwsS3Service {
 
         String fileName = getFileName(multipartFile);
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
-        try (InputStream inputStream = multipartFile.getInputStream()){
-            byte[] bytes = IOUtils.toByteArray(inputStream);
-            objectMetadata.setContentLength(bytes.length);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
-
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileName, byteArrayInputStream, objectMetadata);
-            amazonS3Client.putObject(putObjectRequest);
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                    .bucket(bucketName)
+                    .contentType(multipartFile.getContentType())
+                    .contentLength(multipartFile.getSize())
+                    .key(fileName)
+                    .build();
+            RequestBody requestBody = RequestBody.fromBytes(multipartFile.getBytes());
+            s3Client.putObject(putObjectRequest, requestBody);
         } catch (IOException e) {
             log.error("cannot upload image",e);
             throw new RuntimeException(e);
         }
-        String url = amazonS3Client.getUrl(bucketName, fileName).toString();
+        GetUrlRequest getUrlRequest = GetUrlRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
 
-        return url;
+        return s3Client.utilities().getUrl(getUrlRequest).toString();
     }
 
     public String getFileName(MultipartFile multipartFile) {

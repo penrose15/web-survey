@@ -1,4 +1,4 @@
-package com.survey.respondent.repository;
+package com.survey.domain.respondent.repository;
 
 import com.survey.domain.respondent.entity.Respondent;
 import com.survey.domain.respondent.repository.RespondentJdbcRepository;

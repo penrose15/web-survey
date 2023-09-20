@@ -1,11 +1,9 @@
 package com.survey.domain.participant.entity;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+@ToString
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -22,7 +20,6 @@ public class Participants {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -47,7 +44,6 @@ public class Participants {
 
     public void checkParticipantSurveyHasDone() {
         if(this.status == SurveyStatus.NOT_IN_FCFS || this.status == SurveyStatus.IN_FCFS) throw new IllegalStateException("설문조사를 마친 사용자는 변경 불가능");
-
     }
 
     public void updateParticipantInfo(String name, String email) {
@@ -62,10 +58,12 @@ public class Participants {
     }
 
     public void changeParticipantStatus(SurveyStatus status) {
-        if(status != SurveyStatus.DELETED) {
-            checkParticipantSurveyHasDone();
+//        if(status != SurveyStatus.DELETED) {
+//            checkParticipantSurveyHasDone();
+//        }
+        if(status != null) {
+            this.status = status;
         }
-        this.status = status;
     }
 
     public void setNumber(Integer number) {

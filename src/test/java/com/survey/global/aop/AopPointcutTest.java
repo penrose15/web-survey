@@ -1,6 +1,5 @@
-package com.survey.config.aop;
+package com.survey.global.aop;
 
-import com.survey.domain.respondent.dto.RespondentRequestDto;
 import com.survey.domain.respondent.service.RespondentService;
 import org.junit.jupiter.api.Test;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;

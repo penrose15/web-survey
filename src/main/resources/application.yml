@@ -18,6 +18,21 @@ spring:
     multipart:
       max-file-size: 20MB # 파일 하나당 크기
       max-request-size: 20MB # 전송하려는 총 파일 크기
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  cloud:
+    aws:
+      credentials:
+        accessKey:
+        secretKey:
+      s3:
+        bucket:
+      region:
+        static:
+      stack:
+        auto: false
 
 jwt:
   secret: 2dae84f846e4f4b158a8d26681707f4338495bc7ab68151d7f7679cc5e56202dd3da0d356da007a7c28cb0b780418f4f3246769972d6feaa8f610c7d1e7ecf6a
@@ -32,17 +47,7 @@ aws:
     profile-separator: _
     name: hsj
 
-cloud:
-  aws:
-    credentials:
-      accessKey:
-      secretKey:
-    s3:
-      bucket: survey-images-hsj
-    region:
-      static: ap-northeast-2
-    stack:
-      auto: false
+
 
 
 

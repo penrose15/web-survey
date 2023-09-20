@@ -1,17 +1,14 @@
-package com.survey.options.repository;
+package com.survey.domain.options.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.survey.config.TestConfig;
+import com.survey.global.TestConfig;
 import com.survey.domain.options.dto.FiveMultipleChoiceStatisticDto;
 import com.survey.domain.options.entity.Options;
-import com.survey.domain.options.repository.OptionsRepository;
-import com.survey.domain.options.repository.OptionsRepositoryImpl;
 import com.survey.domain.participant.entity.Participants;
 import com.survey.domain.participant.repository.ParticipantsRepository;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.repository.QuestionsRepository;
-import com.survey.domain.question.repository.QuestionsRepositoryImpl;
 import com.survey.domain.respondent.entity.Respondent;
 import com.survey.domain.respondent.repository.RespondentRepository;
 import com.survey.domain.survey.entity.Survey;
@@ -24,9 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

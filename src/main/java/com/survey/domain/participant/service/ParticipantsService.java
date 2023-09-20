@@ -40,10 +40,12 @@ public class ParticipantsService {
         return participants.getId();
     }
 
-    public Long updateParticipants(Participants participants) {
+    public void updateParticipantsStatus(Long participantId, SurveyStatus status) {
+        Participants participants = getParticipants(participantId);
+        participants.changeParticipantStatus(status);
+
         participantsRepository.save(participants);
 
-        return participants.getId();
     }
 
     public ParticipantsResponseDto findById(Long id) {
@@ -51,12 +53,12 @@ public class ParticipantsService {
                 .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participants"));
     }
 
-    public Long changeParticipantStatus(Long participantId, Integer number, SurveyStatus status) {
+    public Long changeParticipantStatusAndSequence(Long participantId, Integer number, SurveyStatus status) {
         Participants participants = getParticipants(participantId);
         participants.changeParticipantStatus(status);
         participants.setNumber(number);
 
-        participantsRepository.save(participants);
+        participants = participantsRepository.save(participants);
 
         return participants.getId();
     }
@@ -77,5 +79,9 @@ public class ParticipantsService {
 
     public int participantCount(Long surveyId) {
         return participantsRepository.countParticipantSurveyDone(surveyId);
+    }
+
+    public void deleteParticipantsBySurveyId(Long surveyId) {
+        participantsRepository.deleteParticipantsBySurveyId(surveyId);
     }
 }

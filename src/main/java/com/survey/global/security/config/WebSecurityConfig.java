@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -23,6 +24,7 @@ import org.springframework.web.filter.CorsFilter;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
+@EnableMethodSecurity
 @RequiredArgsConstructor
 @Configuration
 public class WebSecurityConfig {
@@ -55,7 +57,12 @@ public class WebSecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/articles",
                         "/login", "/signup", "/swagger-ui/**","/swagger-ui.html","/api-docs/**","/user","/api/login").permitAll());
-        http.authorizeHttpRequests(auth -> auth.requestMatchers("/survey/**").hasRole("USER").anyRequest().authenticated());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/survey/**").hasAnyRole("USER", "ADMIN"));
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/question/**").hasAnyRole("USER", "ADMIN"));
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/participant/**").permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/respondent/**").permitAll());
+        http.authorizeHttpRequests(auth -> auth.requestMatchers("/respondent-result/**").hasAnyRole("USER", "ADMIN"));
+
 
 
 

@@ -5,9 +5,7 @@ import com.survey.domain.survey.dto.SurveyResponsesDTO;
 import com.survey.domain.survey.dto.SurveyUpdateDTO;
 import com.survey.domain.survey.service.SurveyService;
 import com.survey.domain.user.entity.User;
-import com.survey.global.adapter.UserAdapter;
 import com.survey.global.response.MultiResponseDto;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -26,7 +24,7 @@ public class SurveyApiController {
 
 
     @PostMapping
-    public ResponseEntity<Long> createSurvey(@AuthenticationPrincipal UserAdapter user,
+    public ResponseEntity<Long> createSurvey(@AuthenticationPrincipal User user,
                              @RequestBody SurveyCreateDTO request) {
         String email = user.getUsername();
 
@@ -36,7 +34,7 @@ public class SurveyApiController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Long> updateSurvey(@AuthenticationPrincipal UserAdapter user,
+    public ResponseEntity<Long> updateSurvey(@AuthenticationPrincipal User user,
                              @PathVariable("id") Long id,
                              @RequestBody SurveyUpdateDTO request) {
         String email = user.getUsername();
@@ -47,7 +45,7 @@ public class SurveyApiController {
     @GetMapping
     public MultiResponseDto<SurveyResponsesDTO> findUserSurveys(@RequestParam int page,
                                             @RequestParam int size,
-                                            @AuthenticationPrincipal UserAdapter user) {
+                                            @AuthenticationPrincipal User user) {
         Page<SurveyResponsesDTO> responsePage = surveyService.findAll(user.getUsername(), page - 1, size);
 
         List<SurveyResponsesDTO> responseList = responsePage.getContent();
@@ -57,7 +55,7 @@ public class SurveyApiController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable Long id,
-                                           @AuthenticationPrincipal UserAdapter user) {
+                                           @AuthenticationPrincipal User user) {
         surveyService.deleteById(user.getUsername(), id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

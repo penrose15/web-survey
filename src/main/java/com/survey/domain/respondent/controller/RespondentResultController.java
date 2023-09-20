@@ -4,7 +4,7 @@ import com.survey.domain.participant.dto.ParticipantSurveyResponseDto;
 import com.survey.domain.respondent.dto.RespondentStatisticFormDto;
 import com.survey.domain.respondent.service.RespondentResultService;
 import com.survey.domain.survey.service.SurveyFindService;
-import com.survey.global.adapter.UserAdapter;
+import com.survey.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +22,7 @@ public class RespondentResultController {
                                                                                  @PathVariable("participant-id")Long participantId,
                                                                                  @RequestParam("page")int page,
                                                                                  @RequestParam("size")int size,
-                                                                                 @AuthenticationPrincipal UserAdapter user) {
+                                                                                 @AuthenticationPrincipal User user) {
         String email = user.getUsername();
         surveyFindService.findByIdAndEmail(email, surveyId);
 

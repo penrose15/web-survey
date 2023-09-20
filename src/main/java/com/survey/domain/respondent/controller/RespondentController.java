@@ -3,9 +3,11 @@ package com.survey.domain.respondent.controller;
 import com.survey.domain.respondent.dto.RespondentRequestDto;
 import com.survey.domain.respondent.dto.RespondentUpdateDto;
 import com.survey.domain.respondent.service.RespondentService;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +31,7 @@ public class RespondentController {
     * 선착순 시스템이 아닌 경우에만 참가자가 답변을 수정할 수 있음
     * 유저는 수정 불가능하게 막는 기능 필요
     * */
+    @Hidden
     @PatchMapping
     public ResponseEntity<Void> updateRespondent(@RequestParam("survey-id")Long surveyId,
                                                  @RequestParam("participant-id") Long participantId,
@@ -38,6 +41,7 @@ public class RespondentController {
         return ResponseEntity.ok().build();
     }
 
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping // 유저만 삭제 가능
     public ResponseEntity<Void> deleteRespondent(@RequestParam("survey-id")Long surveyId,
                                                  @RequestParam("participant-id") Long participantId) {

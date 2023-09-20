@@ -83,6 +83,10 @@ public class QuestionService {
         questionsRepository.deleteAllById(questionIdList);
     }
 
+    public void deleteBySurveyId(Long surveyId) {
+        questionsRepository.deleteQuestionsBySurveyId(surveyId);
+    }
+
     public int countQuestionsBySurveyId(Long surveyId) {
         return questionsRepository.countQuestionsBySurveyId(surveyId);
     }

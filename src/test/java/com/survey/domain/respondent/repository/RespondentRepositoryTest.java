@@ -1,7 +1,7 @@
-package com.survey.respondent.repository;
+package com.survey.domain.respondent.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.survey.config.TestConfig;
+import com.survey.global.TestConfig;
 import com.survey.domain.options.repository.OptionsRepository;
 import com.survey.domain.participant.entity.Participants;
 import com.survey.domain.participant.repository.ParticipantsRepository;
@@ -10,8 +10,6 @@ import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.repository.QuestionsRepository;
 import com.survey.domain.respondent.dto.RespondentEssayDto;
 import com.survey.domain.respondent.entity.Respondent;
-import com.survey.domain.respondent.repository.RespondentRepository;
-import com.survey.domain.respondent.repository.RespondentRepositoryImpl;
 import com.survey.domain.survey.entity.Survey;
 import com.survey.domain.survey.repository.SurveyRepository;
 import com.survey.domain.user.entity.Roles;

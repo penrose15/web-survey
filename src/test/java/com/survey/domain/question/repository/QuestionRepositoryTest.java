@@ -1,4 +1,4 @@
-package com.survey.question.repository;
+package com.survey.domain.question.repository;
 
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,18 +19,26 @@ import com.survey.domain.user.entity.Roles;
 import com.survey.domain.user.entity.User;
 import com.survey.domain.user.repository.UserRepository;
 import jakarta.persistence.EntityManager;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@Slf4j
 @SpringBootTest
 @Transactional
 public class QuestionRepositoryTest {
@@ -60,6 +68,9 @@ public class QuestionRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Mock
+    private Clock clock;
 
 
     @BeforeEach
@@ -151,16 +162,64 @@ public class QuestionRepositoryTest {
                 respondentList.add(respondent2);
             }
         }
-        respondentList = respondentRepository.saveAll(respondentList);
+        respondentRepository.saveAll(respondentList);
 
-        List<Long> questionIds = questionsList.stream()
-                .mapToLong(Questions::getId).boxed().toList();
-
-        List<QuestionStatisticResponseDto> questionResponses = questionsRepositoryImpl.findQuestionStatisticsByTypeIsFiveMultipleChoice(survey.getId());
+        List<QuestionStatisticResponseDto> questionResponses
+                = questionsRepositoryImpl.findQuestionStatisticsByTypeIsFiveMultipleChoice(survey.getId());
 
         for (QuestionStatisticResponseDto questionResponse : questionResponses) {
-            System.out.println(questionResponse);
+            log.info(String.valueOf(questionResponse));
+        }
+    }
+
+    @Test
+    void deleteBySurveyId() {
+        User user = User.builder()
+                .email("user@gmail.com")
+                .password("password")
+                .role(Roles.USER)
+                .build();
+        user = userRepository.save(user);
+
+        clock = Clock.fixed(LocalDate.of(2023,1,1).atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+
+        Survey survey = Survey.builder()
+                .title("test title")
+                .description("test description")
+                .startAt(LocalDateTime.now(clock).plusDays(1))
+                .endAt(LocalDateTime.now(clock).plusDays(2))
+                .user(user)
+                .userLimit(100)
+                .build();
+        survey = surveyRepository.save(survey);
+
+        List<Questions> questions = new ArrayList<>();
+
+        int questionCount = 100;
+
+        for(int i = 0; i<questionCount; i++) {
+            Questions question = Questions.builder()
+                    .title("question" + i)
+                    .surveyId(survey.getId())
+                    .sequence(i+1)
+                    .questionType(QuestionType.ESSAY)
+                    .isEssential(false)
+                    .build();
+            questions.add(question);
         }
 
+        questionsRepository.saveAll(questions);
+
+        int questionCountBeforeDelete = questionsRepository.countQuestionsBySurveyId(survey.getId());
+
+        assertThat(questionCountBeforeDelete)
+                .isEqualTo(questionCount);
+
+        questionsRepository.deleteQuestionsBySurveyId(survey.getId());
+
+        int questionCountAfterDelete = questionsRepository.countQuestionsBySurveyId(survey.getId());
+
+        assertThat(questionCountAfterDelete)
+                .isEqualTo(0);
     }
 }

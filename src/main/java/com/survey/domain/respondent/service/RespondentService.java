@@ -1,6 +1,5 @@
 package com.survey.domain.respondent.service;
 
-import com.survey.domain.participant.entity.Participants;
 import com.survey.domain.participant.entity.SurveyStatus;
 import com.survey.domain.participant.service.ParticipantsService;
 import com.survey.domain.question.service.QuestionService;
@@ -11,6 +10,7 @@ import com.survey.domain.respondent.repository.RespondentJdbcRepository;
 import com.survey.domain.respondent.repository.RespondentRepository;
 import com.survey.domain.survey.entity.Survey;
 import com.survey.domain.survey.service.SurveyFindService;
+import com.survey.global.redis.FcfsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -33,9 +33,13 @@ public class RespondentService {
     private final QuestionService questionService;
     private final SurveyFindService surveyFindService;
     private final ParticipantsService participantsService;
+    private final FcfsService fcfsService;
 
     public void createRespondents(List<RespondentRequestDto> requests, Long surveyId, Long participantId) {
         Survey survey = surveyFindService.findSurveyById(surveyId);
+
+        checkSurveyPeriod(survey);
+
         int count = questionService.countQuestionsBySurveyId(surveyId);
 
         if(count != requests.size()) throw new IllegalStateException("모든 질문에 답변해주세요");
@@ -54,8 +58,7 @@ public class RespondentService {
             respondents.add(respondent);
         }
 
-        // userLimit를 정하지 않았다면 그냥 저장
-        if(survey.getUserLimit() != -1) {
+        if(survey.getUserLimit() > 0) {
             /*
               survey에 이미 참가한 participants 수를 센다.
               만약 participants 의 숫자가 survey의 userlimit 보다 적다면
@@ -64,19 +67,21 @@ public class RespondentService {
               만약 userlimit보다 크다면 -> 일단 저장하고 status NOT_IN_FCFS로 변경
              */
             int limit = survey.getUserLimit();
-            if(limit > participantsService.participantCount(surveyId)) {
-                int sequence = participantsService.participantCount(surveyId) + 1;
-                participantsService.changeParticipantStatus(participantId, sequence, SurveyStatus.IN_FCFS);
-            }
-            else {
-                int sequence = participantsService.participantCount(surveyId) + 1;
-                participantsService.changeParticipantStatus(participantId, sequence, SurveyStatus.NOT_IN_FCFS);
-            }
-            respondentJdbcRepository.saveAll(respondents);
+            fcfsService.changeParticipantsStatus(surveyId, limit, participantId); //redisson 적용
         }
         else {
-            respondentJdbcRepository.saveAll(respondents);
-            participantsService.changeParticipantStatus(participantId, null, SurveyStatus.FINISHED);
+            // userLimit를 정하지 않았다면 그냥 저장
+            participantsService.changeParticipantStatusAndSequence(participantId, null, SurveyStatus.FINISHED);
+        }
+        respondentJdbcRepository.saveAll(respondents);
+    }
+
+    private void checkSurveyPeriod(Survey survey) {
+        if(survey.getStartAt().isAfter(LocalDateTime.now())) {
+            throw new IllegalArgumentException("설문조사 시간 전에는 설문조사를 시작할 수 없습니다.");
+        }
+        if(survey.getEndAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("설문조사 기간에만 설문 작성이 가능합니다.");
         }
     }
 
@@ -113,11 +118,12 @@ public class RespondentService {
 
     public void deleteRespondent(Long surveyId, Long participantId) {
         respondentRepository.deleteAllBySurveyIdAndParticipantId(surveyId, participantId);
-        Participants participants = participantsService.getParticipants(participantId);
-
-        participants.changeParticipantStatus(SurveyStatus.DELETED);
-        participantsService.updateParticipants(participants);
+        participantsService.updateParticipantsStatus(participantId, SurveyStatus.DELETED);
         log.info("respondents deleted");
+    }
+
+    public void deleteRespondent(Long surveyId) {
+        respondentRepository.deleteAllBySurveyId(surveyId);
     }
 
 

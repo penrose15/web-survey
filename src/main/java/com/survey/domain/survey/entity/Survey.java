@@ -42,8 +42,7 @@ public class Survey extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "category_id")
-    private Long categoryId; //survey와 생명주기가 일치하지 않는거 같아서 의존관계로 설정
+    private Long categoryId;
 
     @Builder
     public Survey(Long id, String title, String description, LocalDateTime startAt, LocalDateTime endAt, Integer userLimit, User user, Long categoryId) {
@@ -61,19 +60,24 @@ public class Survey extends BaseEntity {
     public void validateDateTime(LocalDateTime startAt, LocalDateTime endAt) {
 
         if(startAt != null) {
-            if(startAt.isBefore(LocalDateTime.now())) throw new IllegalStateException("오늘 이전 날짜로는 생성 불가");
+            if(startAt.isBefore(LocalDateTime.now())) {
+                throw new IllegalStateException("오늘 이전 날짜로는 생성 불가");
+            }
         }
         if(endAt != null) {
             if(startAt != null) {
-                if(endAt.isBefore(startAt)) throw new IllegalStateException("시작 날짜 이전으로 설정 불가");
+                if(endAt.isBefore(startAt)) {
+                    throw new IllegalStateException("시작 날짜 이전으로 설정 불가");
+                }
             } else {
-                if(endAt.isBefore(LocalDateTime.now())) throw new IllegalStateException("오늘 이전 날짜로는 생성 불가");
+                if(endAt.isBefore(LocalDateTime.now())) {
+                    throw new IllegalStateException("오늘 이전 날짜로는 생성 불가");
+                }
             }
         }
     }
     //survey 수정
     public void updateSurvey(String title, String description, LocalDateTime startAt, LocalDateTime endAt, Integer userLimit, Long categoryId) {
-
         validateDateTime(startAt, endAt);
 
         if(title != null) {

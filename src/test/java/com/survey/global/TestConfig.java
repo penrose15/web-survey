@@ -1,4 +1,4 @@
-package com.survey.config;
+package com.survey.global;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

@@ -57,8 +57,11 @@ public class OptionsService {
 
     public void deleteOptionsByQuestionId(Long questionId) {
         List<Options> optionsList = findAllByQuestionsId(questionId);
-
         optionsRepository.deleteAll(optionsList);
+    }
+
+    public void deleteOptionsByQuestionIds(List<Long> questionIds) {
+        optionsRepository.deleteByQuestionIds(questionIds);
     }
 
     public List<Options> findAllByQuestionIds(List<Long> questionIds) {

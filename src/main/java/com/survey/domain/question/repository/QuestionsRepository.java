@@ -4,7 +4,9 @@ import com.survey.domain.question.entity.Questions;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,6 +24,12 @@ public interface QuestionsRepository extends JpaRepository<Questions, Long> {
             "FROM Questions q " +
             "WHERE q.surveyId = :surveyId ")
     int countQuestionsBySurveyId(Long surveyId);
+
+    @Transactional
+    @Modifying
+    @Query("delete from Questions q " +
+            "where q.surveyId = :surveyId")
+    void deleteQuestionsBySurveyId(Long surveyId);
 
 
 }

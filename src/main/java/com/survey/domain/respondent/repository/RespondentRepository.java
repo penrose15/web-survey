@@ -29,6 +29,14 @@ public interface RespondentRepository extends JpaRepository<Respondent, Long> {
 
     @Transactional
     @Modifying
-    @Query("delete from Respondent r where r.surveyId = :surveyId AND r.participantsId = :participantsId")
+    @Query("delete from Respondent r" +
+            " where r.surveyId = :surveyId " +
+            "AND r.participantsId = :participantsId")
     void deleteAllBySurveyIdAndParticipantId(@Param("surveyId")Long surveyId, @Param("participantsId")Long participantsId);
+
+    @Transactional
+    @Modifying
+    @Query("delete from Respondent r" +
+            " where r.surveyId = :surveyId ")
+    void deleteAllBySurveyId(@Param("surveyId")Long surveyId);
 }

@@ -1,4 +1,4 @@
-package com.survey.question.service;
+package com.survey.domain.question.service;
 
 import com.survey.domain.options.dto.OptionsResponseDto;
 import com.survey.domain.options.entity.Options;

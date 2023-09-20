@@ -18,20 +18,14 @@ public class Category {
     @Column(nullable = false, length = 100)
     private String category;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column(name = "user_id",nullable = false)
+    private Long userId;
 
     @Builder
-    public Category(Long id, String category, User user) {
+    public Category(Long id, String category, Long userId) {
         this.id = id;
         this.category = category;
-        this.user = user;
-    }
-
-    public void createCategory(String category, User user) {
-        this.category = category;
-        this.user = user;
+        this.userId = userId;
     }
 
     public void updateCategory(String category) {
@@ -39,4 +33,5 @@ public class Category {
             this.category = category;
         }
     }
+
 }
