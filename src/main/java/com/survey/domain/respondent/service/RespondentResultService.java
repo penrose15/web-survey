@@ -50,16 +50,20 @@ public class RespondentResultService {
         Long surveyId = participants.getSurveyId();
         List<Respondent> respondents = respondentRepository.findListByParticipantsId(participantsId);
 
-        Page<QuestionOptionResponseDto> questionOptionResponseDtos = questionAndOptionService.getQuestionsAndOptionsBySurveyId(page, size, surveyId);
-        List<QuestionOptionResponseDto> questionOptionResponseDtoList = questionOptionResponseDtos.getContent();
+        Page<QuestionOptionResponseDto> questionAndOptionsPage = questionAndOptionService.getQuestionsAndOptionsBySurveyId(page, size, surveyId);
+        List<QuestionOptionResponseDto> questionAndOptions = questionAndOptionsPage.getContent();
 
         Map<Long, Respondent> respondentMap = respondents.stream()
                 .collect(Collectors.toMap(
-                        Respondent::getParticipantsId,
+                        Respondent::getQuestionId,
                         i2 -> i2
                 ));
 
-        List<RespondentResponseDto> respondentResponseDtos = getRespondentResponseDtos(questionOptionResponseDtoList, respondentMap);
+        List<RespondentResponseDto> responses = getResponses(questionAndOptions, respondentMap);
+        log.info("#################################");
+        for (RespondentResponseDto response : responses) {
+            System.out.println(response);
+        }
 
         return ParticipantSurveyResponseDto.builder()
                 .participantId(participantsId)
@@ -67,7 +71,7 @@ public class RespondentResultService {
                 .name(participants.getName())
                 .email(participants.getEmail())
                 .participantStatus(participants.getStatus())
-                .respondents(respondentResponseDtos)
+                .respondents(responses)
                 .build();
 
     }
@@ -158,49 +162,49 @@ public class RespondentResultService {
                 .collect(Collectors.groupingBy(FiveMultipleChoiceStatisticDto::getQuestionId));
     }
 
-    private List<RespondentResponseDto> getRespondentResponseDtos(List<QuestionOptionResponseDto> questionOptionResponseDtoList, Map<Long, Respondent> respondentMap) {
-        return questionOptionResponseDtoList.stream()
-                .map(q -> {
+    private List<RespondentResponseDto> getResponses(List<QuestionOptionResponseDto> questionsAndOptions, Map<Long, Respondent> respondentMap) {
+        return questionsAndOptions.stream()
+                .map(question -> {
                     Long respondentId = null;
                     String answer = null;
-                    Long optionId = null;
-                    Integer optionSequence = null;
-                    Respondent respondent = respondentMap.getOrDefault(q.getId(), null);
+                    Long optionIdParticipantChoose = null;
+                    Integer optionSequenceParticipantChoose = null;
+                    Respondent respondent = respondentMap.getOrDefault(question.getQuestionId(), null);
                     if (respondent != null) {
                         respondentId = respondent.getId();
                         answer = respondent.getAnswer();
-                        optionId = respondent.getOptionId();
-                        optionSequence = respondent.getOptionSequence();
+                        optionIdParticipantChoose = respondent.getOptionId();
+                        optionSequenceParticipantChoose = respondent.getOptionSequence();
                     }
 
                     return RespondentResponseDto.builder()
-                            .questions(getQuestionsResponseDto(q))
-                            .options(getOptionResponseDto(q))
+                            .questions(getQuestions(question))
+                            .options(getOptions(question))
                             .respondentId(respondentId)
                             .answer(answer)
-                            .optionId(optionId)
-                            .optionSequence(optionSequence)
+                            .optionIdParticipantChoose(optionIdParticipantChoose)
+                            .optionSequenceParticipantChoose(optionSequenceParticipantChoose)
                             .build();
                 }).toList();
     }
 
 
-    private QuestionsResponseDto getQuestionsResponseDto(QuestionOptionResponseDto questionOption) {
+    private QuestionsResponseDto getQuestions(QuestionOptionResponseDto questionOption) {
         return QuestionsResponseDto.builder()
-                .id(questionOption.getId())
+                .id(questionOption.getQuestionId())
                 .title(questionOption.getTitle())
                 .surveyId(questionOption.getSurveyId())
                 .questionType(questionOption.getQuestionType().name())
                 .build();
     }
 
-    private List<OptionsResponseDto> getOptionResponseDto(QuestionOptionResponseDto questionOption) {
+    private List<OptionsResponseDto> getOptions(QuestionOptionResponseDto questionOption) {
         return questionOption.getOptionsList()
                 .stream()
-                .map(q -> OptionsResponseDto.builder()
-                        .id(q.getId())
-                        .optionSequence(q.getOptionSequence())
-                        .options(q.getOptions())
+                .map(o -> OptionsResponseDto.builder()
+                        .id(o.getId())
+                        .optionSequence(o.getOptionSequence())
+                        .choice(o.getChoice())
                         .build()).collect(Collectors.toList());
     }
 }

@@ -1,13 +1,11 @@
-package com.survey.domain.options.dto;
+package com.survey.domain.category.dto;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OptionsRequestDto {
-    private String choice;
+public class CategoryRequestDto {
+    private String category;
 }

@@ -14,10 +14,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
@@ -27,8 +32,13 @@ public class QuestionService {
     private final AwsS3Service awsS3Service;
 
     public Questions createQuestion(QuestionRequestDto questionRequestDto, Long surveyId, Integer sequence) {
-        String filename = awsS3Service.getFileName(questionRequestDto.getMultipartFile());
-        String url = awsS3Service.uploadFile(questionRequestDto.getMultipartFile());
+        String filename = null;
+        String url = null;
+
+        if(questionRequestDto.getMultipartFile() != null) {
+            url = awsS3Service.uploadFile(questionRequestDto.getMultipartFile());
+            filename = awsS3Service.getFileName(questionRequestDto.getMultipartFile());
+        }
 
         QuestionDto question = questionRequestDto.getQuestionDto();
 
@@ -75,7 +85,7 @@ public class QuestionService {
 
 
     public void deleteById(Long questionId) {
-        Questions question = findById(questionId); //validation
+        findById(questionId); //validation
         questionsRepository.deleteById(questionId);
     }
 
@@ -89,5 +99,9 @@ public class QuestionService {
 
     public int countQuestionsBySurveyId(Long surveyId) {
         return questionsRepository.countQuestionsBySurveyId(surveyId);
+    }
+
+    public List<Questions> findBySurveyAndIsEssential(Long surveyId) {
+        return questionsRepository.findBySurveyIdAndIsEssential(surveyId);
     }
 }

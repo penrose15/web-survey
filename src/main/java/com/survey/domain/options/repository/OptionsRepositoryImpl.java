@@ -25,7 +25,7 @@ public class OptionsRepositoryImpl implements OptionsRepositoryCustom{
                 .select(Projections.constructor(FiveMultipleChoiceStatisticDto.class,
                         questions.id.as("questionId"),
                         options.id.as("optionId"),
-                        options.option.as("option"),
+                        options.choice.as("choice"),
                         options.sequence.as("optionSequence"),
                         respondent.id.count().as("count")))
                 .from(options)

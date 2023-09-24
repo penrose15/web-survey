@@ -27,11 +27,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
+@ActiveProfiles("test")
 @SpringBootTest
 public class RespondentResultServiceTest {
     @Autowired
@@ -94,7 +95,7 @@ public class RespondentResultServiceTest {
             if(i % 2 == 0) {
                 for(int j = 0; j<5;j++) {
                     Options options = Options.builder()
-                            .option("option " + (j+1))
+                            .choice("option " + (j+1))
                             .sequence(j+1)
                             .questionId(questions.getId())
                             .build();
@@ -217,7 +218,7 @@ public class RespondentResultServiceTest {
             if(i % 2 == 0) {
                 for(int j = 0; j<5;j++) {
                     Options options = Options.builder()
-                            .option("option " + (j+1))
+                            .choice("option " + (j+1))
                             .sequence(j+1)
                             .questionId(questions.getId())
                             .build();

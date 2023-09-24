@@ -3,6 +3,7 @@ package com.survey.domain.question.dto;
 import com.survey.domain.question.entity.QuestionType;
 import lombok.*;
 
+@ToString
 @Getter
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

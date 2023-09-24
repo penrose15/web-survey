@@ -35,12 +35,12 @@ public class WebSecurityConfig {
     private final UserRepository userRepository;
     private final CorsFilter corsFilter;
 
-    @Bean
-    public WebSecurityCustomizer configure() {
-        return (web) -> web.ignoring()
-                .requestMatchers(toH2Console())
-                .requestMatchers("/static/**");
-    }
+//    @Bean
+//    public WebSecurityCustomizer configure() {
+//        return (web) -> web.ignoring()
+//                .requestMatchers(toH2Console())
+//                .requestMatchers("/static/**");
+//    }
 
     @Bean //deprecated 된 부분 수정
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -56,7 +56,7 @@ public class WebSecurityConfig {
                 .invalidateHttpSession(true));
         http.csrf(AbstractHttpConfigurer::disable);
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/articles",
-                        "/login", "/signup", "/swagger-ui/**","/swagger-ui.html","/api-docs/**","/user","/api/login").permitAll());
+                        "/login", "/h2/**","/signup", "/swagger-ui/**","/swagger-ui.html","/api-docs/**","/user","/api/login").permitAll());
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/survey/**").hasAnyRole("USER", "ADMIN"));
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/question/**").hasAnyRole("USER", "ADMIN"));
         http.authorizeHttpRequests(auth -> auth.requestMatchers("/participant/**").permitAll());

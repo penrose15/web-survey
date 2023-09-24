@@ -1,9 +1,7 @@
 package com.survey.domain.question.dto;
 
 import com.survey.domain.options.dto.OptionsResponseDto;
-import com.survey.domain.options.entity.Options;
 import com.survey.domain.question.entity.QuestionType;
-import com.survey.domain.question.entity.Questions;
 import lombok.*;
 
 import java.util.List;
@@ -14,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QuestionOptionResponseDto {
 
-    private Long id;
+    private Long questionId;
     private String title;
     private Long surveyId;
     private String imageUrl;

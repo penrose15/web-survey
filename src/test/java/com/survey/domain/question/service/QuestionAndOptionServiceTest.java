@@ -7,7 +7,6 @@ import com.survey.domain.question.dto.QuestionOptionResponseDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.repository.QuestionsRepository;
-import com.survey.domain.question.service.QuestionAndOptionService;
 import com.survey.domain.survey.entity.Survey;
 import com.survey.domain.survey.repository.SurveyRepository;
 import com.survey.domain.user.entity.Roles;
@@ -17,11 +16,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@ActiveProfiles("test")
 @SpringBootTest
 public class QuestionAndOptionServiceTest {
     @Autowired
@@ -80,7 +81,7 @@ public class QuestionAndOptionServiceTest {
                 for(int i = 0; i<5; i++) {
                     Options options = Options.builder()
                             .questionId(questionId)
-                            .option(questionId + " : option "+(i+1))
+                            .choice(questionId + " : option "+(i+1))
                             .build();
                     optionsRepository.save(options);
                     System.out.println("### " + questionId);
@@ -96,14 +97,14 @@ public class QuestionAndOptionServiceTest {
 
         for (QuestionOptionResponseDto questionOptionResponseDto : resultList) {
             System.out.println("{");
-            System.out.println("id : " + questionOptionResponseDto.getId());
+            System.out.println("id : " + questionOptionResponseDto.getQuestionId());
             System.out.println("title : " + questionOptionResponseDto.getTitle());
             System.out.println("questionType : " + questionOptionResponseDto.getQuestionType());
             System.out.println("[");
             for (OptionsResponseDto optionsResponseDto: questionOptionResponseDto.getOptionsList()) {
                 System.out.println("{");
                 System.out.println("id : " + optionsResponseDto.getId());
-                System.out.println("options : " + optionsResponseDto.getOptions());
+                System.out.println("options : " + optionsResponseDto.getChoice());
                 System.out.println("}");
             }
             System.out.println("]");

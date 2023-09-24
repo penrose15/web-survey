@@ -22,7 +22,13 @@ public interface OptionsRepository extends JpaRepository<Options, Long> {
 
     @Transactional
     @Modifying
-    @Query("delete from options o " +
+    @Query("DELETE FROM Options o " +
             "where o.questionId in :questionIds")
     void deleteByQuestionIds(List<Long> questionIds);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Options o " +
+            "where o.questionId in :questionIds")
+    void deleteBySurveyId(List<Long> questionIds);
 }

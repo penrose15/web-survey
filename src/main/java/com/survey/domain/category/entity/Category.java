@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @Entity
+@Table(name = "categories")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 100)
+    @Column(name = "name",nullable = false, length = 100)
     private String category;
 
     @Column(name = "user_id",nullable = false)

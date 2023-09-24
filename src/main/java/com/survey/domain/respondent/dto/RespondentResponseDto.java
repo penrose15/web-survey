@@ -2,13 +2,11 @@ package com.survey.domain.respondent.dto;
 
 import com.survey.domain.options.dto.OptionsResponseDto;
 import com.survey.domain.question.dto.QuestionsResponseDto;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
+@ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RespondentResponseDto {
@@ -16,16 +14,16 @@ public class RespondentResponseDto {
     private List<OptionsResponseDto> options;
     private Long respondentId;
     private String answer;
-    private Long optionId;
-    private Integer optionSequence;
+    private Long optionIdParticipantChoose;
+    private Integer optionSequenceParticipantChoose;
 
     @Builder
-    public RespondentResponseDto(QuestionsResponseDto questions, List<OptionsResponseDto> options, Long respondentId, String answer, Long optionId, Integer optionSequence) {
+    public RespondentResponseDto(QuestionsResponseDto questions, List<OptionsResponseDto> options, Long respondentId, String answer, Long optionIdParticipantChoose, Integer optionSequenceParticipantChoose) {
         this.questions = questions;
         this.options = options;
         this.respondentId = respondentId;
         this.answer = answer;
-        this.optionId = optionId;
-        this.optionSequence = optionSequence;
+        this.optionIdParticipantChoose = optionIdParticipantChoose;
+        this.optionSequenceParticipantChoose = optionSequenceParticipantChoose;
     }
 }

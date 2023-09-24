@@ -9,8 +9,6 @@ import com.survey.domain.participant.repository.ParticipantsRepository;
 import com.survey.domain.question.dto.QuestionStatisticResponseDto;
 import com.survey.domain.question.entity.QuestionType;
 import com.survey.domain.question.entity.Questions;
-import com.survey.domain.question.repository.QuestionsRepository;
-import com.survey.domain.question.repository.QuestionsRepositoryImpl;
 import com.survey.domain.respondent.entity.Respondent;
 import com.survey.domain.respondent.repository.RespondentRepository;
 import com.survey.domain.survey.entity.Survey;
@@ -25,6 +23,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
@@ -38,6 +37,7 @@ import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("test")
 @Slf4j
 @SpringBootTest
 @Transactional
@@ -111,7 +111,7 @@ public class QuestionRepositoryTest {
             for(int j = 0; j<5; j++) {
                 Options options = Options.builder()
                         .questionId(questions.getId())
-                        .option("option " + j)
+                        .choice("option " + j)
                         .sequence(j+1)
                         .build();
                 optionsList.add(options);
@@ -146,7 +146,7 @@ public class QuestionRepositoryTest {
                     .surveyId(survey.getId())
                     .optionId(options.getId())
                     .optionSequence(options.getSequence())
-                    .answer(options.getOption())
+                    .answer(options.getChoice())
                     .build();
             respondentList.add(respondent);
 
@@ -157,7 +157,7 @@ public class QuestionRepositoryTest {
                         .surveyId(survey.getId())
                         .optionId(options.getId())
                         .optionSequence(options.getSequence())
-                        .answer(options.getOption())
+                        .answer(options.getChoice())
                         .build();
                 respondentList.add(respondent2);
             }

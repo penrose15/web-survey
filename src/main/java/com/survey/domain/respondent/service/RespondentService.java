@@ -2,8 +2,10 @@ package com.survey.domain.respondent.service;
 
 import com.survey.domain.participant.entity.SurveyStatus;
 import com.survey.domain.participant.service.ParticipantsService;
+import com.survey.domain.question.entity.Questions;
 import com.survey.domain.question.service.QuestionService;
 import com.survey.domain.respondent.dto.RespondentRequestDto;
+import com.survey.domain.respondent.dto.RespondentResponseDto;
 import com.survey.domain.respondent.dto.RespondentUpdateDto;
 import com.survey.domain.respondent.entity.Respondent;
 import com.survey.domain.respondent.repository.RespondentJdbcRepository;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,40 +43,69 @@ public class RespondentService {
 
         checkSurveyPeriod(survey);
 
-        int count = questionService.countQuestionsBySurveyId(surveyId);
+        checkEssentialQuestionsAllAnswered(requests, surveyId);
 
-        if(count != requests.size()) throw new IllegalStateException("모든 질문에 답변해주세요");
+        saveRespondents(requests, participantId, survey);
+    }
 
-        List<Respondent> respondents = new ArrayList<>();
-        for (RespondentRequestDto request : requests) {
-            //서술형인 경우 options가 null이므로
-            Respondent respondent = Respondent.builder()
-                    .answer(request.getAnswer())
-                    .questionId(request.getQuestionId())
-                    .optionId(request.getOptionId())
-                    .participantsId(participantId)
-                    .surveyId(surveyId)
-                    .optionSequence(request.getOptionSequence())
-                    .build();
-            respondents.add(respondent);
-        }
+    private void saveRespondents(List<RespondentRequestDto> requests, Long participantId, Survey survey) {
+        Long surveyId = survey.getId();
+        List<Respondent> respondents = getResponses(requests, surveyId, participantId);
 
         if(survey.getUserLimit() > 0) {
-            /*
-              survey에 이미 참가한 participants 수를 센다.
-              만약 participants 의 숫자가 survey의 userlimit 보다 적다면
-              respondents를 저장하고 participant의 status IN_FCFS로 변경, number를 survey에 참여한 참여자 수 + 1로 저장한다 (아니면 redis로 +1 씩 한 숫자로 설정하든가)
-
-              만약 userlimit보다 크다면 -> 일단 저장하고 status NOT_IN_FCFS로 변경
-             */
             int limit = survey.getUserLimit();
-            fcfsService.changeParticipantsStatus(surveyId, limit, participantId); //redisson 적용
+            fcfsService.applyFcfsService(surveyId, limit, participantId);
         }
         else {
-            // userLimit를 정하지 않았다면 그냥 저장
             participantsService.changeParticipantStatusAndSequence(participantId, null, SurveyStatus.FINISHED);
         }
         respondentJdbcRepository.saveAll(respondents);
+    }
+
+    private void checkEssentialQuestionsAllAnswered(List<RespondentRequestDto> requests, Long surveyId) {
+        List<Questions> essentialQuestions = questionService.findBySurveyAndIsEssential(surveyId);
+        int essentialQuestionCount = essentialQuestions.size();
+
+        Map<Long, RespondentRequestDto> respondentMap = getResponseMap(requests);
+
+        for (Questions essentialQuestion : essentialQuestions) {
+            if(respondentMap.get(essentialQuestion.getId()) != null) {
+                RespondentRequestDto request = respondentMap.get(essentialQuestion.getId());
+                if(request.getAnswer() != null && request.getOptionId() != null) {
+                    essentialQuestionCount -= 1;
+                }
+            }
+        }
+
+        if(essentialQuestionCount != 0) throw new IllegalStateException("모든 질문에 답변해주세요");
+    }
+
+    private Map<Long, RespondentRequestDto> getResponseMap(List<RespondentRequestDto> requests) {
+        Map<Long, RespondentRequestDto> responseMap = new HashMap<>();
+        for (RespondentRequestDto request : requests) {
+            responseMap.put(request.getQuestionId(), request);
+        }
+        return responseMap;
+    }
+
+    private List<Respondent> getResponses(List<RespondentRequestDto> requests, Long surveyId, Long participantId) {
+        List<Respondent> respondents = new ArrayList<>();
+        for (RespondentRequestDto request : requests) {
+            Long optionId = request.getOptionId() == null ? null : request.getOptionId();
+            String answer = request.getAnswer() == null ? null : request.getAnswer();
+            Integer optionSequence = request.getOptionSequence() == null ? null : request.getOptionSequence();
+
+            Respondent respondent = Respondent.builder()
+                    .answer(answer)
+                    .questionId(request.getQuestionId())
+                    .optionId(optionId)
+                    .participantsId(participantId)
+                    .surveyId(surveyId)
+                    .optionSequence(optionSequence)
+                    .build();
+            respondents.add(respondent);
+        }
+        return respondents;
     }
 
     private void checkSurveyPeriod(Survey survey) {

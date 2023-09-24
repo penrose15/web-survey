@@ -4,13 +4,14 @@ import com.survey.domain.question.dto.QuestionListRequestDto;
 import com.survey.domain.question.dto.QuestionOptionResponseDto;
 import com.survey.domain.question.dto.QuestionOptionsRequestDto;
 import com.survey.domain.question.service.QuestionAndOptionService;
-import com.survey.domain.question.service.QuestionService;
 import com.survey.domain.survey.service.SurveyFindService;
 import com.survey.domain.user.entity.User;
 import com.survey.global.response.MultiResponseDto;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,10 @@ public class QuestionsAndOptionsApiController {
     private final QuestionAndOptionService questionAndOptionService;
     private final SurveyFindService surveyFindService;
 
+    @Operation(description = "create questions and options")
     @PostMapping(value = "/{survey-id}")
     public ResponseEntity<String> createQuestionsAndOptions(@PathVariable("survey-id") Long surveyId,
-                                                    @ModelAttribute QuestionListRequestDto requests,
+                                                    @ParameterObject @ModelAttribute QuestionListRequestDto requests,
                                                     @AuthenticationPrincipal User user) {
         verifySurvey(user.getEmail(), surveyId);
 

@@ -15,14 +15,11 @@ public class AWSConfig {
     @Value("${spring.cloud.aws.credentials.secretKey}")
     private String accessSecret;
 
-    @Value("${spring.cloud.aws.region.static}")
-    private String region;
-
     @Bean
     public S3Client s3Client() {
         return S3Client.builder()
                 .credentialsProvider(this::awsCredentials)
-                .region(Region.of(region))
+                .region(Region.AP_NORTHEAST_2)
                 .build();
     }
 

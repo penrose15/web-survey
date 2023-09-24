@@ -14,24 +14,24 @@ public class Options {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    private String option;
+    private String choice;
     @Column(nullable = false)
     private Long questionId;
     @Column
     private Integer sequence;
 
     @Builder
-    public Options(Long id, String option, Long questionId, Integer sequence) {
+    public Options(Long id, String choice, Long questionId, Integer sequence) {
         this.id = id;
-        this.option = option;
+        this.choice = choice;
         this.questionId = questionId;
         this.sequence = sequence;
     }
 
 
     public void updateOption(OptionsRequestDto dto) {
-        if(dto.getOption() != null) {
-            this.option = dto.getOption();
+        if(dto.getChoice() != null) {
+            this.choice = dto.getChoice();
         }
     }
     public void setSequence(Integer sequence) {

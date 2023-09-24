@@ -10,6 +10,13 @@ import lombok.*;
 @Entity
 public class Questions {
 
+    @PrePersist
+    void setEssentialIfNull() {
+        if(this.isEssential == null) {
+            this.isEssential = false;
+        }
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +41,7 @@ public class Questions {
     private QuestionType questionType;
 
     @Column(name = "essential")
-    private boolean isEssential;
+    private Boolean isEssential;
 
     public void updateQuestion(String title, String type, Boolean isEssential) {
         if(title != null) {

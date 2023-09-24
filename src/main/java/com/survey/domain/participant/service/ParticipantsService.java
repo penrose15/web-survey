@@ -48,10 +48,7 @@ public class ParticipantsService {
 
     }
 
-    public ParticipantsResponseDto findById(Long id) {
-        return participantsRepository.findByParticipantsId(id)
-                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 participants"));
-    }
+
 
     public Long changeParticipantStatusAndSequence(Long participantId, Integer number, SurveyStatus status) {
         Participants participants = getParticipants(participantId);

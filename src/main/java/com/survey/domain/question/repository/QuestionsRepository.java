@@ -25,6 +25,12 @@ public interface QuestionsRepository extends JpaRepository<Questions, Long> {
             "WHERE q.surveyId = :surveyId ")
     int countQuestionsBySurveyId(Long surveyId);
 
+    @Query("SELECT q " +
+            "FROM Question q " +
+            "WHERE q.surveyId = :surveyId " +
+            "AND q.isEssential = TRUE")
+    List<Questions> findBySurveyIdAndIsEssential(Long surveyId);
+
     @Transactional
     @Modifying
     @Query("delete from Questions q " +

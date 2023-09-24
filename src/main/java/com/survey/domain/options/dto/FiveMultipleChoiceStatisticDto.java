@@ -8,15 +8,15 @@ import lombok.*;
 public class FiveMultipleChoiceStatisticDto {
     private Long questionId;
     private Long optionId;
-    private String option;
+    private String choice;
     private Integer optionSequence;
     private Long count;
 
     @Builder
-    public FiveMultipleChoiceStatisticDto(Long questionId, Long optionId, String option, Integer optionSequence, Long count) {
+    public FiveMultipleChoiceStatisticDto(Long questionId, Long optionId, String choice, Integer optionSequence, Long count) {
         this.questionId = questionId;
         this.optionId = optionId;
-        this.option = option;
+        this.choice = choice;
         this.optionSequence = optionSequence;
         this.count = count;
     }
